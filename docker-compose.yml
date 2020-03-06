@@ -1,0 +1,19 @@
+version: '3.1'
+services:
+  server:
+    build: ./server
+    ports:
+      - "8080:8080"
+    # depends_on: ["db"]
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+  web:
+    build: ./app
+    ports:
+     - "8000:80"
+    volumes:
+      - "./app:/app:cached"
+    depends_on: ["server"]
+    command: npm start
