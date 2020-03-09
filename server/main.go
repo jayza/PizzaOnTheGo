@@ -15,19 +15,25 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-type pizza struct {
+/*
+Pizza ...
+*/
+type Pizza struct {
 	ID    string `json:"ID"`
 	Name  string `json:"Name"`
 	Price uint32 `json:"Price"`
 }
 
-type topping struct {
+/*
+Topping ...
+*/
+type Topping struct {
 	ID   string `json:"ID"`
 	Name string `json:"Name"`
 }
 
-type allPizzas []pizza
-type allToppings []topping
+type allPizzas []Pizza
+type allToppings []Topping
 
 var pizzas = allPizzas{
 	{
