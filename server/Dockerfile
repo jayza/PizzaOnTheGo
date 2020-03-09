@@ -1,4 +1,4 @@
-from golang:1.13-alpine
+FROM golang:1.13-alpine
 
 WORKDIR /backend
 

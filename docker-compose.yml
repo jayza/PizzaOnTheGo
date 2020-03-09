@@ -4,11 +4,9 @@ services:
     build: ./server
     ports:
       - "8080:8080"
-    # depends_on: ["db"]
-    env_file:
-      - .env
+    depends_on: ["mariadb"]
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=${NODE_ENV}
   web:
     build: ./app
     ports:
@@ -17,3 +15,10 @@ services:
       - "./app:/app:cached"
     depends_on: ["server"]
     command: npm start
+  mariadb:
+    image: mariadb:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+
+

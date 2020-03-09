@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -14,6 +15,39 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
+type pizza struct {
+	ID    string `json:"ID"`
+	Name  string `json:"Name"`
+	Price uint32 `json:"Price"`
+}
+
+type topping struct {
+	ID   string `json:"ID"`
+	Name string `json:"Name"`
+}
+
+type allPizzas []pizza
+type allToppings []topping
+
+var pizzas = allPizzas{
+	{
+		ID:    "1",
+		Name:  "Margherita",
+		Price: 9000,
+	},
+}
+
+var toppings = allToppings{
+	{
+		ID:   "1",
+		Name: "Tomato sauce",
+	},
+	{
+		ID:   "2",
+		Name: "Mozzarella",
+	},
+}
+
 func handler(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 	name := query.Get("name")
@@ -24,11 +58,38 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(fmt.Sprintf("Hello, %s\n", name)))
 }
 
+/*
+Pizza Route Handlers
+*/
+func getOnePizza(w http.ResponseWriter, r *http.Request) {
+	pizzaID := mux.Vars(r)["id"]
+
+	for _, singlePizza := range pizzas {
+		if singlePizza.ID == pizzaID {
+			json.NewEncoder(w).Encode(singlePizza)
+		}
+	}
+}
+
+func getAllPizzas(w http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(w).Encode(pizzas)
+}
+
+/*
+Topping Route Handler
+*/
+func getAllToppings(w http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(w).Encode(toppings)
+}
+
 func main() {
 	// Create Server and Route Handlers
-	r := mux.NewRouter()
+	r := mux.NewRouter().StrictSlash(true)
 
+	// Routes
 	r.HandleFunc("/", handler)
+	r.HandleFunc("/pizzas", getAllPizzas).Methods("GET")
+	r.HandleFunc("/pizzas/{id}", getOnePizza).Methods("GET")
 
 	srv := &http.Server{
 		Handler:      r,
@@ -38,10 +99,10 @@ func main() {
 	}
 
 	// Configure Logging
-	LOG_FILE_LOCATION := os.Getenv("LOG_FILE_LOCATION")
-	if LOG_FILE_LOCATION != "" {
+	logFileLocation := os.Getenv("LOG_FILE_LOCATION")
+	if logFileLocation != "" {
 		log.SetOutput(&lumberjack.Logger{
-			Filename:   LOG_FILE_LOCATION,
+			Filename:   logFileLocation,
 			MaxSize:    500, // megabytes
 			MaxBackups: 3,
 			MaxAge:     28,   //days
