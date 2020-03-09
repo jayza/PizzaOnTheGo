@@ -2,8 +2,7 @@ package main
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
+	"database/sql"
 	"log"
 	"net/http"
 	"os"
@@ -11,94 +10,22 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/gorilla/mux"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jayza/pizzaonthego/routers"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-/*
-Pizza ...
-*/
-type Pizza struct {
-	ID    string `json:"ID"`
-	Name  string `json:"Name"`
-	Price uint32 `json:"Price"`
-}
-
-/*
-Topping ...
-*/
-type Topping struct {
-	ID   string `json:"ID"`
-	Name string `json:"Name"`
-}
-
-type allPizzas []Pizza
-type allToppings []Topping
-
-var pizzas = allPizzas{
-	{
-		ID:    "1",
-		Name:  "Margherita",
-		Price: 9000,
-	},
-}
-
-var toppings = allToppings{
-	{
-		ID:   "1",
-		Name: "Tomato sauce",
-	},
-	{
-		ID:   "2",
-		Name: "Mozzarella",
-	},
-}
-
-func handler(w http.ResponseWriter, r *http.Request) {
-	query := r.URL.Query()
-	name := query.Get("name")
-	if name == "" {
-		name = "Guest"
-	}
-	log.Printf("Received request for %s\n", name)
-	w.Write([]byte(fmt.Sprintf("Hello, %s\n", name)))
-}
-
-/*
-Pizza Route Handlers
-*/
-func getOnePizza(w http.ResponseWriter, r *http.Request) {
-	pizzaID := mux.Vars(r)["id"]
-
-	for _, singlePizza := range pizzas {
-		if singlePizza.ID == pizzaID {
-			json.NewEncoder(w).Encode(singlePizza)
-		}
-	}
-}
-
-func getAllPizzas(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(pizzas)
-}
-
-/*
-Topping Route Handler
-*/
-func getAllToppings(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(toppings)
-}
+var db *sql.DB
+var err error
 
 func main() {
-	// Create Server and Route Handlers
-	r := mux.NewRouter().StrictSlash(true)
-
-	// Routes
-	r.HandleFunc("/", handler)
-	r.HandleFunc("/pizzas", getAllPizzas).Methods("GET")
-	r.HandleFunc("/pizzas/{id}", getOnePizza).Methods("GET")
+	db, err = sql.Open("mysql", "root:password@tcp(mariadb)/pizzaonthego")
+	if err != nil {
+		panic(err.Error())
+	}
 
 	srv := &http.Server{
-		Handler:      r,
+		Handler:      routers.GetRoutes(),
 		Addr:         ":8080",
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
@@ -125,6 +52,7 @@ func main() {
 	}()
 
 	// Graceful Shutdown
+	defer db.Close()
 	waitForShutdown(srv)
 }
 
