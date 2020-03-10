@@ -7,31 +7,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/jayza/pizzaonthego/models"
 	pizza "github.com/jayza/pizzaonthego/repositories"
 )
-
-type allPizzas []models.Pizza
-type allToppings []models.Topping
-
-var pizzas = allPizzas{
-	{
-		ID:    "1",
-		Name:  "Margherita",
-		Price: 9000,
-	},
-}
-
-var toppings = allToppings{
-	{
-		ID:   "1",
-		Name: "Tomato sauce",
-	},
-	{
-		ID:   "2",
-		Name: "Mozzarella",
-	},
-}
 
 /*
  Miscellaneous Handlers
@@ -54,6 +31,7 @@ Pizza Route Handlers
 
 // GetOnePizzaHandler ...
 func GetOnePizzaHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	pizzaID := mux.Vars(r)["id"]
 	singlePizza := pizza.GetOne(pizzaID)
 	json.NewEncoder(w).Encode(singlePizza)
@@ -61,6 +39,7 @@ func GetOnePizzaHandler(w http.ResponseWriter, r *http.Request) {
 
 // GetAllPizzasHandler ...
 func GetAllPizzasHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	pizzas := pizza.GetAll()
 	json.NewEncoder(w).Encode(pizzas)
 }
@@ -70,6 +49,6 @@ Topping Route Handler
 */
 
 // GetAllToppingsHandler ...
-func GetAllToppingsHandler(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(toppings)
-}
+// func GetAllToppingsHandler(w http.ResponseWriter, r *http.Request) {
+// 	json.NewEncoder(w).Encode(toppings)
+// }
