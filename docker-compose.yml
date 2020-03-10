@@ -16,11 +16,23 @@ services:
     depends_on: ["server"]
     command: npm start
   mariadb:
-    image: mariadb:latest
+    image: mariadb:10.4
     ports:
       - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z 127.0.0.1 3306 || exit 1"]
+      interval: 1m30s
+      timeout: 60s
+      retries: 6
+  flyway:
+    image: flyway/flyway:6.3-alpine
+    command: -url=jdbc:mariadb://mariadb:${MYSQL_PORT}/${MYSQL_DATABASE} -user=${MYSQL_ROOT_USER} -password=${MYSQL_ROOT_PASSWORD} -connectRetries=60 migrate
+    volumes:
+      - "./sql:/flyway/sql"
+    depends_on: ["mariadb"]
+
 
 

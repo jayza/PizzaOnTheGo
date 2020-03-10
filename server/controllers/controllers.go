@@ -8,6 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/jayza/pizzaonthego/models"
+	pizza "github.com/jayza/pizzaonthego/repositories"
 )
 
 type allPizzas []models.Pizza
@@ -54,16 +55,13 @@ Pizza Route Handlers
 // GetOnePizzaHandler ...
 func GetOnePizzaHandler(w http.ResponseWriter, r *http.Request) {
 	pizzaID := mux.Vars(r)["id"]
-
-	for _, singlePizza := range pizzas {
-		if singlePizza.ID == pizzaID {
-			json.NewEncoder(w).Encode(singlePizza)
-		}
-	}
+	singlePizza := pizza.GetOne(pizzaID)
+	json.NewEncoder(w).Encode(singlePizza)
 }
 
 // GetAllPizzasHandler ...
 func GetAllPizzasHandler(w http.ResponseWriter, r *http.Request) {
+	pizzas := pizza.GetAll()
 	json.NewEncoder(w).Encode(pizzas)
 }
 

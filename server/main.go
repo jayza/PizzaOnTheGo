@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"database/sql"
 	"log"
 	"net/http"
 	"os"
@@ -10,19 +9,15 @@ import (
 	"syscall"
 	"time"
 
+	database "github.com/jayza/pizzaonthego/services"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jayza/pizzaonthego/routers"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-var db *sql.DB
-var err error
-
 func main() {
-	db, err = sql.Open("mysql", "root:password@tcp(mariadb)/pizzaonthego")
-	if err != nil {
-		panic(err.Error())
-	}
+	database.Connect()
 
 	srv := &http.Server{
 		Handler:      routers.GetRoutes(),
@@ -52,11 +47,11 @@ func main() {
 	}()
 
 	// Graceful Shutdown
-	defer db.Close()
 	waitForShutdown(srv)
 }
 
 func waitForShutdown(srv *http.Server) {
+	database.Close()
 	interruptChan := make(chan os.Signal, 1)
 	signal.Notify(interruptChan, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
