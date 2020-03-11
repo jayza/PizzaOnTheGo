@@ -1,4 +1,4 @@
-package pizza
+package repositories
 
 import (
 	"github.com/jayza/pizzaonthego/models"
@@ -10,15 +10,15 @@ func GetOne(id string) models.Pizza {
 	db := database.Connect()
 	const pizzaQuery = `
 		SELECT p.id, p.name, p.price
-		FROM pizzas as p
+		FROM pizza as p
 		WHERE p.id = ?
 	`
 	const pizzaOptionsQuery = `
 		SELECT o.id, o.name, ot.name
-		FROM options as o
-		INNER JOIN pizzas_options as po ON ? = po.pizza_id
-		INNER JOIN option_types as ot ON o.type_id = ot.id
-		WHERE o.id = po.option_id
+		FROM pizza_option as o
+		INNER JOIN pizzas_pizza_options as po ON ? = po.pizza_id
+		INNER JOIN pizza_option_type as ot ON o.type_id = ot.id
+		WHERE o.id = po.pizza_option_id
 	`
 
 	result, err := db.Query(pizzaQuery, id)
@@ -43,7 +43,7 @@ func GetOne(id string) models.Pizza {
 		}
 
 		for optionResult.Next() {
-			var option models.Option
+			var option models.PizzaOption
 
 			err := optionResult.Scan(&option.ID, &option.Name, &option.Type)
 
@@ -51,7 +51,19 @@ func GetOne(id string) models.Pizza {
 				panic(err.Error())
 			}
 
-			pizza.Options = append(pizza.Options, option)
+			switch option.Type {
+			case "Base":
+				pizza.Base = option
+			case "Topping":
+				pizza.Toppings = append(pizza.Toppings, option)
+			case "Crust":
+				pizza.Crust = option
+			case "Dough":
+				pizza.Dough = option
+			case "Size":
+				pizza.Size = option
+			}
+			// pizza.Options = append(pizza.Options, option)
 		}
 
 	}
@@ -64,14 +76,14 @@ func GetAll() []models.Pizza {
 	var db = database.Connect()
 	const pizzaQuery = `
 		SELECT p.id, p.name, p.price
-		FROM pizzas as p
+		FROM pizza as p
 	`
 	const pizzaOptionsQuery = `
 		SELECT o.id, o.name, ot.name
-		FROM options as o
-		INNER JOIN pizzas_options as po ON ? = po.pizza_id
-		INNER JOIN option_types as ot ON o.type_id = ot.id
-		WHERE o.id = po.option_id
+		FROM pizza_option as o
+		INNER JOIN pizzas_pizza_options as po ON ? = po.pizza_id
+		INNER JOIN pizza_option_type as ot ON o.type_id = ot.id
+		WHERE o.id = po.pizza_option_id
 	`
 
 	result, err := db.Query(pizzaQuery)
@@ -102,7 +114,7 @@ func GetAll() []models.Pizza {
 		defer optionResult.Close()
 
 		for optionResult.Next() {
-			var option models.Option
+			var option models.PizzaOption
 
 			err := optionResult.Scan(&option.ID, &option.Name, &option.Type)
 
@@ -110,7 +122,20 @@ func GetAll() []models.Pizza {
 				panic(err.Error())
 			}
 
-			pizza.Options = append(pizza.Options, option)
+			switch option.Type {
+			case "Base":
+				pizza.Base = option
+			case "Topping":
+				pizza.Toppings = append(pizza.Toppings, option)
+			case "Crust":
+				pizza.Crust = option
+			case "Dough":
+				pizza.Dough = option
+			case "Size":
+				pizza.Size = option
+			}
+
+			// pizza.Options = append(pizza.Options, option)
 		}
 
 		pizzas = append(pizzas, pizza)
