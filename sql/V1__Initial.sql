@@ -1,90 +1,200 @@
-CREATE TABLE pizza (
-  id int NOT NULL AUTO_INCREMENT,
-  name varchar(255) NOT NULL,
-  price decimal(5,2) NOT NULL,
-  PRIMARY KEY (id)
+/*
+* Products
+*/
+
+/**
+* Example:
+* Pizza,
+* Drink
+*/
+CREATE TABLE `product_type` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
 );
 
-CREATE TABLE pizza_option_type (
-  id int NOT NULL AUTO_INCREMENT,
-  name varchar(255) NOT NULL,
-  PRIMARY KEY (id)
+/**
+* Example:
+* Small,
+* Medium,
+* Large
+*/
+CREATE TABLE `product_size` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `product_type_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `price` decimal(5,2) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT fk_product_size_product_type FOREIGN KEY (`product_type_id`)
+    REFERENCES `product_type` (`id`)
 );
 
-CREATE TABLE pizza_option (
-  id int NOT NULL AUTO_INCREMENT,
-  name varchar(255) NOT NULL,
-  type_id int NOT NULL,
-  price decimal(5,2) NOT NULL,
-  PRIMARY KEY (id),
-  CONSTRAINT fk_option_pizza_option_types FOREIGN KEY (type_id)
-    REFERENCES pizza_option_type(id)
+/**
+* Example:
+* Crust,
+* Calzone Style
+*/
+CREATE TABLE `product_variation` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `product_type_id` int NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `price` decimal(5,2) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT fk_product_variation_product_type FOREIGN KEY (`product_type_id`)
+    REFERENCES `product_type` (`id`)
 );
 
-CREATE TABLE pizzas_pizza_options (
-  id int NOT NULL AUTO_INCREMENT,
-  pizza_id INT NOT NULL,
-  pizza_option_id INT NOT NULL,
-  PRIMARY KEY (id),
-  CONSTRAINT fk_pizzas_options_pizza FOREIGN KEY (pizza_id)
-    REFERENCES pizza(id),
-  CONSTRAINT fk_pizzas_options_pizza_option FOREIGN KEY (pizza_option_id)
-    REFERENCES pizza_option(id)
+CREATE TABLE `product` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `product_type_id` int NOT NULL,
+  `product_size_id` int NOT NULL,
+  `product_variation_id` int NOT NULL,
+  `name` varchar(255) NULL DEFAULT NULL,
+  `custom` boolean DEFAULT 0,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  CONSTRAINT fk_product_product_ FOREIGN KEY (`product_type_id`)
+    REFERENCES `product_type`(`id`),
+  CONSTRAINT fk_product_product_size FOREIGN KEY (`product_size_id`)
+    REFERENCES `product_size`(`id`),
+  CONSTRAINT fk_product_product_variation FOREIGN KEY (`product_variation_id`)
+    REFERENCES `product_variation`(`id`)
 );
 
--- Seeds
+CREATE TABLE `ingredient_type` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+);
 
-INSERT INTO pizza (name, price) 
-  VALUES 
-    ("Super Cheesy Margherita", 90.99),
-    ("Funghi", 75.00),
-    ("Creamy Sucuk", 85.00);
+CREATE TABLE `ingredient_category` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+/**
+* Example:
+* Tomato sauce,
+* Mozarella
+*/
+CREATE TABLE `ingredient` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `ingredient_type_id` int NOT NULL,
+  `ingredient_category_id` int NULL DEFAULT NULL,
+  `name` varchar(255),
+  `price` decimal(5,2) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT fk_ingredient_ingredient_type FOREIGN KEY (`ingredient_type_id`)
+    REFERENCES `ingredient_type` (`id`),
+  CONSTRAINT fk_ingredient_ingredient_category FOREIGN KEY (`ingredient_category_id`)
+    REFERENCES `ingredient_category` (`id`)
+);
 
-INSERT INTO pizza_option_type (name) 
-  VALUES 
-    ("Base"),
-    ("Topping"),
-    ("Crust"),
-    ("Dough"),
-    ("Size");
+CREATE TABLE `product_ingredients` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `product_id` int NOT NULL,
+  `ingredient_id` int NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT fk_product_ingredients_product FOREIGN KEY (`product_id`)
+    REFERENCES `product`(`id`),
+  CONSTRAINT fk_product_ingredients_ingredient FOREIGN KEY (`ingredient_id`)
+    REFERENCES `ingredient`(`id`)
+);
 
-INSERT INTO pizza_option (name, type_id, price)
+/**
+* Orders
+*/
+CREATE TABLE `order` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `status` int NOT NULL DEFAULT(0),
+  `user_id` int NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY(`id`)
+);
+
+CREATE TABLE `product_line_item` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `order_id` int NOT NULL,
+  `product_id` int NOT NULL,
+  `product_size_id` int NULL DEFAULT NULL,
+  `product_variation_id` int NULL DEFAULT NULL,
+  `quantity` int NOT NULL DEFAULT(1),
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY(`id`),
+  CONSTRAINT fk_product_line_item_order FOREIGN KEY (`order_id`)
+    REFERENCES `order`(`id`),
+  CONSTRAINT fk_product_line_item_product FOREIGN KEY (`product_id`)
+    REFERENCES `product`(`id`),
+  CONSTRAINT fk_product_line_item_product_size FOREIGN KEY (`product_size_id`)
+    REFERENCES `product_size`(`id`),
+  CONSTRAINT fk_product_line_item_product_variation FOREIGN KEY (`product_variation_id`)
+    REFERENCES `product_variation`(`id`)
+);
+
+/**
+* Seeds
+*/
+INSERT INTO `product_type` (id, name)
   VALUES
-    ("Tomato sauce", 1, 10),
-    ("Mozarella", 2, 10),
-    ("Thin", 3, 10),
-    ("Thick", 3, 15),
-    ("Cheese-filled", 3, 20),
-    ("Mushrooms", 2, 10),
-    ("Creme Fraiche", 1, 10),
-    ("Spinach", 2, 10),
-    ("Sucuk", 2, 10),
-    ("Red Onion", 2, 10),
-    ("Garlic Olive Oil", 3, 25),
-    ("Gluten Free", 4, 15),
-    ("Sourdough", 4, 20),
-    ("Classic", 4, 10),
-    ("Small", 5, -10),
-    ("Medium", 5, 0),
-    ("Large", 5, 25);
+    (1, "Pizza"),
+    (2, "Drink");
 
-INSERT INTO pizzas_pizza_options (pizza_id, pizza_option_id)
+INSERT INTO `product_size` (product_type_id, name, price) 
+  VALUES 
+    (1, "Small", 30),
+    (1, "Medium", 40),
+    (1, "Large", 50),
+    (1, "X-Large", 60),
+    (2, "33cl", 15),
+    (2, "50cl", 25);
+
+INSERT INTO `product_variation` (product_type_id, name, price) 
+  VALUES 
+    (1, "Thin Crust", 30),
+    (1, "Thick Crust", 40),
+    (1, "Cheesy Crust", 50);
+
+INSERT INTO `ingredient_type` (id, name)
   VALUES
-    (1, 1),
+    (1, "Base"),
+    (2, "Topping"),
+    (3, "Dough");
+
+INSERT INTO `ingredient_category` (id, name)
+  VALUES
+    (1, "Meat"),
+    (2, "Vegetable"),
+    (3, "Cheese");
+
+INSERT INTO `ingredient` (ingredient_type_id, name, price, ingredient_category_id)
+  VALUES
+    (1, "Creme Fraiche", 10, NULL),
+    (1, "Tomato sauce", 10, NULL),
+    (2, "Mozarella", 10, 3),
+    (2, "Mushrooms", 10, 2),
+    (2, "Spinach", 10, 2),
+    (2, "Sucuk", 10, 1),
+    (2, "Kebab", 10, 1),
+    (2, "Red Onion", 10, 2),
+    (3, "Gluten Free", 15, NULL),
+    (3, "Sourdough", 20, NULL),
+    (3, "Classic", 10, NULL);
+
+INSERT INTO `product` (product_type_id, product_size_id, product_variation_id, name, custom)
+  VALUES
+    (1, 2, 3, "Margherita", 0),
+    (1, 3, 1, "Custom Pizza", 1);
+
+INSERT INTO `product_ingredients` (product_id, ingredient_id)
+  VALUES
     (1, 2),
-    (1, 5),
-    (1, 14),
-    (1, 16),
-    (2, 1),
+    (1, 3),
+    (1, 11),
     (2, 2),
-    (2, 6),
     (2, 3),
-    (2, 12),
-    (2, 16),
-    (3, 7),
-    (3, 8),
-    (3, 9),
-    (3, 10),
-    (3, 11),
-    (3, 13),
-    (3, 16);
+    (2, 11),
+    (2, 6);
+    

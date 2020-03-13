@@ -1,9 +1,8 @@
 package models
 
-// PizzaOption struct
-type PizzaOption struct {
+// ProductVariation ...
+type ProductVariation struct {
 	ID    string  `json:"id"`
 	Name  string  `json:"name"`
-	Type  string  `json:"type"`
 	Price float32 `json:"price"`
 }

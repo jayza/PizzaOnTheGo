@@ -9,15 +9,13 @@ import (
 	"syscall"
 	"time"
 
-	database "github.com/jayza/pizzaonthego/services"
-
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/jayza/pizzaonthego/routers"
+	"github.com/jayza/pizzaonthego/services"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 func main() {
-	database.Connect()
+	services.InitDB("root:password@tcp(mariadb)/pizzaonthego")
 
 	srv := &http.Server{
 		Handler:      routers.GetRoutes(),
@@ -51,7 +49,8 @@ func main() {
 }
 
 func waitForShutdown(srv *http.Server) {
-	database.Close()
+	defer services.Db.Close()
+
 	interruptChan := make(chan os.Signal, 1)
 	signal.Notify(interruptChan, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
