@@ -9,7 +9,7 @@
 */
 CREATE TABLE `product_type` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` tinytext NOT NULL,
   PRIMARY KEY (`id`)
 );
 
@@ -22,7 +22,7 @@ CREATE TABLE `product_type` (
 CREATE TABLE `product_size` (
   `id` int NOT NULL AUTO_INCREMENT,
   `product_type_id` int NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `name` tinytext NOT NULL,
   `price` decimal(5,2) NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT fk_product_size_product_type FOREIGN KEY (`product_type_id`)
@@ -37,7 +37,7 @@ CREATE TABLE `product_size` (
 CREATE TABLE `product_variation` (
   `id` int NOT NULL AUTO_INCREMENT,
   `product_type_id` int NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `name` tinytext NOT NULL,
   `price` decimal(5,2) NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT fk_product_variation_product_type FOREIGN KEY (`product_type_id`)
@@ -47,31 +47,25 @@ CREATE TABLE `product_variation` (
 CREATE TABLE `product` (
   `id` int NOT NULL AUTO_INCREMENT,
   `product_type_id` int NOT NULL,
-  `product_size_id` int NOT NULL,
-  `product_variation_id` int NOT NULL,
-  `name` varchar(255) NULL DEFAULT NULL,
+  `name` tinytext NULL DEFAULT NULL,
   `custom` boolean DEFAULT 0,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NULL ON UPDATE CURRENT_TIMESTAMP,
   `deleted` timestamp NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT fk_product_product_ FOREIGN KEY (`product_type_id`)
-    REFERENCES `product_type`(`id`),
-  CONSTRAINT fk_product_product_size FOREIGN KEY (`product_size_id`)
-    REFERENCES `product_size`(`id`),
-  CONSTRAINT fk_product_product_variation FOREIGN KEY (`product_variation_id`)
-    REFERENCES `product_variation`(`id`)
+    REFERENCES `product_type`(`id`)
 );
 
 CREATE TABLE `ingredient_type` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` tinytext NOT NULL,
   PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `ingredient_category` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` tinytext NOT NULL,
   PRIMARY KEY (`id`)
 );
 /**
@@ -83,7 +77,7 @@ CREATE TABLE `ingredient` (
   `id` int NOT NULL AUTO_INCREMENT,
   `ingredient_type_id` int NOT NULL,
   `ingredient_category_id` int NULL DEFAULT NULL,
-  `name` varchar(255),
+  `name` tinytext NOT NULL,
   `price` decimal(5,2) NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT fk_ingredient_ingredient_type FOREIGN KEY (`ingredient_type_id`)
@@ -120,8 +114,8 @@ CREATE TABLE `product_line_item` (
   `id` int NOT NULL AUTO_INCREMENT,
   `order_id` int NOT NULL,
   `product_id` int NOT NULL,
-  `product_size_id` int NULL DEFAULT NULL,
-  `product_variation_id` int NULL DEFAULT NULL,
+  `product_size_id` int NOT NULL,
+  `product_variation_id` int NOT NULL,
   `quantity` int NOT NULL DEFAULT(1),
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NULL ON UPDATE CURRENT_TIMESTAMP,
@@ -134,6 +128,15 @@ CREATE TABLE `product_line_item` (
     REFERENCES `product_size`(`id`),
   CONSTRAINT fk_product_line_item_product_variation FOREIGN KEY (`product_variation_id`)
     REFERENCES `product_variation`(`id`)
+);
+
+CREATE TABLE `product_special_instruction` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `product_line_item_id` int NOT NULL,
+  `description` tinytext NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT fk_product_special_instruction_product_line_item FOREIGN KEY (`product_line_item_id`)
+    REFERENCES `product_line_item` (`id`)
 );
 
 /**
@@ -185,10 +188,10 @@ INSERT INTO `ingredient` (ingredient_type_id, name, price, ingredient_category_i
     (3, "Sourdough", 20, NULL),
     (3, "Classic", 10, NULL);
 
-INSERT INTO `product` (product_type_id, product_size_id, product_variation_id, name, custom)
+INSERT INTO `product` (product_type_id, name, custom)
   VALUES
-    (1, 2, 3, "Margherita", 0),
-    (1, 3, 1, "Custom Pizza", 1);
+    (1, "Margherita", 0),
+    (1, "Custom Pizza", 1);
 
 INSERT INTO `product_ingredients` (product_id, ingredient_id)
   VALUES

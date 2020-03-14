@@ -2,8 +2,11 @@ package models
 
 // LineItem struct
 type LineItem struct {
-	ID       string      `json:"id"`
-	Product  Pizza       `json:"product"`
-	Options  PizzaOption `json:"options"`
-	Quantity uint8       `json:"quantity"`
+	ID                 int               `json:"id"`
+	Item               *Pizza            `json:"item"`
+	Price              float64           `json:"price"`
+	Size               *ProductSize      `json:"size,omitempty"`
+	Variation          *ProductVariation `json:"variation,omitempty"`
+	Quantity           uint8             `json:"quantity"`
+	SpecialInstruction string            `json:"special_instruction,omitempty"`
 }

@@ -46,8 +46,7 @@ func HandleError(err error) error {
 	case sql.ErrNoRows:
 		return HandleErrorCode(404, err)
 	default:
-		fmt.Println("Error:", err)
-		return NewHTTPError(err, 500, "Internal Server Error")
+		return HandleErrorCode(500, err)
 	}
 }
 
@@ -58,6 +57,9 @@ func HandleErrorCode(code int, err error) error {
 		return NewHTTPError(err, 400, "Bad Request")
 	case 404:
 		return NewHTTPError(err, 404, "Not Found")
+	case 500:
+		panic(err.Error())
+		// return NewHTTPError(err, 500, "Internal Server Error")
 	default:
 		fmt.Println("Error:", err)
 		return NewHTTPError(err, 500, "Internal Server Error")

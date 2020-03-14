@@ -9,9 +9,8 @@ import (
 
 // JSONResponse ...
 type JSONResponse struct {
-	Data    *interface{} `json:"data,omitempty"`
-	Errors  *JSONError   `json:"errors,omitempty"`
-	Success bool         `json:"success"`
+	Data   *interface{} `json:"data,omitempty"`
+	Errors *JSONError   `json:"errors,omitempty"`
 }
 
 // JSONError ...
@@ -28,10 +27,7 @@ func RespondWithJSON(w http.ResponseWriter, r *http.Request, payload interface{}
 
 	if err == nil {
 		response.Data = &payload
-		response.Success = true
 	} else {
-		response.Success = false
-
 		err = errors.HandleError(err)
 
 		var jsonError *JSONError = &JSONError{}
@@ -58,8 +54,6 @@ func RespondWithError(w http.ResponseWriter, r *http.Request, statusCode int, er
 	w.Header().Set("Content-Type", "application/json")
 
 	var response JSONResponse
-
-	response.Success = false
 
 	err = errors.HandleError(err)
 

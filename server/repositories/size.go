@@ -6,7 +6,7 @@ import (
 )
 
 // AllSizes ...
-func AllSizes() (sizes []*models.ProductVariation, err error) {
+func AllSizes() (sizes []*models.ProductSize, err error) {
 	const sizeQuery = `
 		SELECT ps.id, ps.name, ps.price FROM product_size AS ps
 		WHERE product_type_id = 1
@@ -21,7 +21,7 @@ func AllSizes() (sizes []*models.ProductVariation, err error) {
 	defer result.Close()
 
 	for result.Next() {
-		var size *models.ProductVariation = &models.ProductVariation{}
+		var size *models.ProductSize = &models.ProductSize{}
 
 		err := result.Scan(&size.ID, &size.Name, &size.Price)
 
@@ -36,14 +36,14 @@ func AllSizes() (sizes []*models.ProductVariation, err error) {
 }
 
 // OneSize fetches a product size.
-func OneSize(sizeID int) (size *models.ProductVariation, err error) {
+func OneSize(sizeID int) (size *models.ProductSize, err error) {
 	const sizeQuery = `
 		SELECT ps.id, ps.name, ps.price FROM product_size AS ps
 		WHERE ps.product_type_id = 1
 		AND ps.id = ?
 	`
 
-	size = &models.ProductVariation{}
+	size = &models.ProductSize{}
 	err = services.Db.Find(sizeQuery, services.Db.Params(sizeID), services.Db.Fields(&size.ID, &size.Name, &size.Price))
 
 	if err != nil {
