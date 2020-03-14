@@ -52,7 +52,8 @@ CREATE TABLE `product` (
   `name` varchar(255) NULL DEFAULT NULL,
   `custom` boolean DEFAULT 0,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `updated` timestamp NULL ON UPDATE CURRENT_TIMESTAMP,
+  `deleted` timestamp NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT fk_product_product_ FOREIGN KEY (`product_type_id`)
     REFERENCES `product_type`(`id`),
@@ -105,12 +106,13 @@ CREATE TABLE `product_ingredients` (
 /**
 * Orders
 */
-CREATE TABLE `order` (
+CREATE TABLE `orders` (
   `id` int NOT NULL AUTO_INCREMENT,
   `status` int NOT NULL DEFAULT(0),
   `user_id` int NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `updated` timestamp NULL ON UPDATE CURRENT_TIMESTAMP,
+  `deleted` timestamp NULL,
   PRIMARY KEY(`id`)
 );
 
@@ -122,10 +124,10 @@ CREATE TABLE `product_line_item` (
   `product_variation_id` int NULL DEFAULT NULL,
   `quantity` int NOT NULL DEFAULT(1),
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated` timestamp NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `updated` timestamp NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY(`id`),
-  CONSTRAINT fk_product_line_item_order FOREIGN KEY (`order_id`)
-    REFERENCES `order`(`id`),
+  CONSTRAINT fk_product_line_item_orders FOREIGN KEY (`order_id`)
+    REFERENCES `orders`(`id`),
   CONSTRAINT fk_product_line_item_product FOREIGN KEY (`product_id`)
     REFERENCES `product`(`id`),
   CONSTRAINT fk_product_line_item_product_size FOREIGN KEY (`product_size_id`)

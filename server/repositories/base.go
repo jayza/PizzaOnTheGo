@@ -6,34 +6,32 @@ import (
 )
 
 // AllBases ...
-func AllBases() []models.Ingredient {
+func AllBases() (bases []*models.Ingredient, err error) {
 	const baseQuery = `
 		SELECT i.id, i.name, i.price, it.name FROM ingredient AS i
 		INNER JOIN ingredient_type AS it ON it.id = i.ingredient_type_id
 		WHERE ingredient_type_id = 1
 	`
 
-	result, err := services.Db.Query(baseQuery)
+	result, err := services.Db.DB.Query(baseQuery)
 
 	if err != nil {
-		panic(err.Error())
+		return nil, err
 	}
 
 	defer result.Close()
 
-	var bases []models.Ingredient
-
 	for result.Next() {
-		var base models.Ingredient
+		var base *models.Ingredient = &models.Ingredient{}
 
 		err := result.Scan(&base.ID, &base.Name, &base.Price, &base.Category)
 
 		if err != nil {
-			panic(err.Error())
+			return nil, err
 		}
 
 		bases = append(bases, base)
 	}
 
-	return bases
+	return bases, nil
 }

@@ -49,7 +49,7 @@ func main() {
 }
 
 func waitForShutdown(srv *http.Server) {
-	defer services.Db.Close()
+	defer services.Db.DB.Close()
 
 	interruptChan := make(chan os.Signal, 1)
 	signal.Notify(interruptChan, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)

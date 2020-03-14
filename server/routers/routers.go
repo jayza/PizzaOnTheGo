@@ -11,11 +11,12 @@ func GetRoutes() *mux.Router {
 	routes := mux.NewRouter().StrictSlash(false)
 
 	api := routes.PathPrefix("/api/v1").Subrouter()
-	// Routes
-	// routes.HandleFunc("", controllers.HomeHandler)
+
 	// Pizzas
 	api.HandleFunc("/pizzas", controllers.GetAllPizzasHandler).Methods("GET")
 	api.HandleFunc("/pizzas/{id}", controllers.GetOnePizzaHandler).Methods("GET")
+	pizza := api.PathPrefix("/pizzas/{id}").Subrouter()
+	pizza.HandleFunc("/toppings", controllers.GetAllToppingsForPizzaHandler).Methods("GET")
 
 	//Toppings
 	api.HandleFunc("/toppings", controllers.GetAllToppingsHandler).Methods("GET")
@@ -31,6 +32,9 @@ func GetRoutes() *mux.Router {
 
 	//Sizes
 	api.HandleFunc("/sizes", controllers.GetAllSizesHandler).Methods("GET")
+
+	//Orders
+	api.HandleFunc("/orders/{id}", controllers.GetOneOrderHandler).Methods("GET")
 
 	return routes
 }

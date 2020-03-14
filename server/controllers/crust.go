@@ -1,15 +1,14 @@
 package controllers
 
 import (
-	"encoding/json"
 	"net/http"
 
+	"github.com/jayza/pizzaonthego/helpers"
 	repository "github.com/jayza/pizzaonthego/repositories"
 )
 
 // GetAllCrustsHandler ...
 func GetAllCrustsHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	crusts := repository.AllCrusts()
-	json.NewEncoder(w).Encode(crusts)
+	crusts, err := repository.AllCrusts()
+	helpers.RespondWithJSON(w, r, crusts, err)
 }

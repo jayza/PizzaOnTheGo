@@ -1,15 +1,14 @@
 package controllers
 
 import (
-	"encoding/json"
 	"net/http"
 
+	"github.com/jayza/pizzaonthego/helpers"
 	repository "github.com/jayza/pizzaonthego/repositories"
 )
 
 // GetAllToppingsHandler ...
 func GetAllToppingsHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	toppings := repository.AllToppings()
-	json.NewEncoder(w).Encode(toppings)
+	toppings, err := repository.AllToppings()
+	helpers.RespondWithJSON(w, r, toppings, err)
 }
