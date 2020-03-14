@@ -6,7 +6,6 @@ import (
 
 	// Mysql Driver for database connection pool
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/jayza/pizzaonthego/helpers"
 )
 
 // Database struct
@@ -43,28 +42,11 @@ func (d *Database) Params(args ...interface{}) []interface{} {
 	return args
 }
 
-// Row is used to determine errors for every row in the query result.
-func (d *Database) Row(e error) (err error) {
-	switch err {
-	case nil:
-		return nil
-	case sql.ErrNoRows:
-		return helpers.NewHTTPError(err, 404, "Not Found")
-	default:
-		return helpers.NewHTTPError(err, 500, "Internal Server Error")
-	}
-}
-
 // Find queries a row from the database.
+// The fields passed are pointing to a model
+// Theres no need for preparing statements since go does it under the covers @http://go-database-sql.org/prepared.html
 func (d *Database) Find(query string, params []interface{}, fields []interface{}) error {
-	stmt, err := d.DB.Prepare(query)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer stmt.Close()
-
-	return d.Row(stmt.QueryRow(params...).Scan(fields...))
+	return d.DB.QueryRow(query, params...).Scan(fields...)
 }
 
 // All ...

@@ -37,7 +37,7 @@ func AllDoughs() (doughs []*models.Ingredient, err error) {
 }
 
 // OneDoughForPizza fetches the dough of the pizza.
-func OneDoughForPizza(pizzaID string) (dough *models.Ingredient, err error) {
+func OneDoughForPizza(pizzaID int) (dough *models.Ingredient, err error) {
 	const doughQuery = `
 		SELECT i.id, i.name, i.price FROM ingredient AS i
 		INNER JOIN product_ingredients AS pi ON pi.ingredient_id = i.id

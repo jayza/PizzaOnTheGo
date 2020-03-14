@@ -36,7 +36,7 @@ func AllSizes() (sizes []*models.ProductVariation, err error) {
 }
 
 // OneSize fetches a product size.
-func OneSize(sizeID string) (size *models.ProductVariation, err error) {
+func OneSize(sizeID int) (size *models.ProductVariation, err error) {
 	const sizeQuery = `
 		SELECT ps.id, ps.name, ps.price FROM product_size AS ps
 		WHERE ps.product_type_id = 1

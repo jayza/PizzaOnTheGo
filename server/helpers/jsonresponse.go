@@ -3,6 +3,8 @@ package helpers
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/jayza/pizzaonthego/errors"
 )
 
 // JSONResponse ...
@@ -30,8 +32,11 @@ func RespondWithJSON(w http.ResponseWriter, r *http.Request, payload interface{}
 	} else {
 		response.Success = false
 
+		err = errors.HandleError(err)
+
 		var jsonError *JSONError = &JSONError{}
-		clientError, ok := err.(ClientError) // type assertion for behavior.
+
+		clientError, ok := err.(errors.ClientError) // type assertion for behavior.
 		if ok {
 			jsonError.Code = clientError.Status()
 			jsonError.Message = clientError.Error()
@@ -44,6 +49,34 @@ func RespondWithJSON(w http.ResponseWriter, r *http.Request, payload interface{}
 
 		response.Errors = jsonError
 	}
+
+	json.NewEncoder(w).Encode(response)
+}
+
+// RespondWithError ...
+func RespondWithError(w http.ResponseWriter, r *http.Request, statusCode int, err error) {
+	w.Header().Set("Content-Type", "application/json")
+
+	var response JSONResponse
+
+	response.Success = false
+
+	err = errors.HandleError(err)
+
+	var jsonError *JSONError = &JSONError{}
+
+	clientError, ok := err.(errors.ClientError) // type assertion for behavior.
+	if ok {
+		jsonError.Code = clientError.Status()
+		jsonError.Message = clientError.Error()
+	} else {
+		jsonError.Code = 500
+		jsonError.Message = "Internal Server Error"
+	}
+
+	w.WriteHeader(jsonError.Code)
+
+	response.Errors = jsonError
 
 	json.NewEncoder(w).Encode(response)
 }

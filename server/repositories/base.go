@@ -35,3 +35,23 @@ func AllBases() (bases []*models.Ingredient, err error) {
 
 	return bases, nil
 }
+
+// OneBaseForPizza fetches the base of the pizza.
+func OneBaseForPizza(pizzaID int) (base *models.Ingredient, err error) {
+	const baseQuery = `
+		SELECT i.id, i.name, i.price FROM ingredient AS i
+		INNER JOIN product_ingredients AS pi ON pi.ingredient_id = i.id
+		WHERE ingredient_type_id = 1
+		AND pi.id = ?
+	`
+
+	base = &models.Ingredient{}
+
+	err = services.Db.Find(baseQuery, services.Db.Params(pizzaID), services.Db.Fields(&base.ID, &base.Name, &base.Price))
+
+	if err != nil {
+		return nil, err
+	}
+
+	return base, nil
+}

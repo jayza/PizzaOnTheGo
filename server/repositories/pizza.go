@@ -6,39 +6,19 @@ import (
 )
 
 // OnePizza ...
-func OnePizza(id string) (pizza *models.Pizza, err error) {
+func OnePizza(pizzaID int) (pizza *models.Pizza, err error) {
 	const pizzaQuery = `
 		SELECT p.id, p.name
 		FROM product as p
 		WHERE p.id = ?
 	`
-	// const pizzaOptionsQuery = `
-	// 	SELECT o.id, o.name, ot.name
-	// 	FROM pizza_option as o
-	// 	INNER JOIN pizzas_pizza_options as po ON ? = po.pizza_id
-	// 	INNER JOIN pizza_option_type as ot ON o.type_id = ot.id
-	// 	WHERE o.id = po.pizza_option_id
-	// `
-
-	result, err := services.Db.DB.Query(pizzaQuery, id)
-	if err != nil {
-		return nil, err
-	}
-	defer result.Close()
 
 	pizza = &models.Pizza{}
 
-	for result.Next() {
-		err := result.Scan(&pizza.ID, &pizza.Name)
+	err = services.Db.Find(pizzaQuery, services.Db.Params(pizzaID), services.Db.Fields(&pizza.ID, &pizza.Name))
 
-		if err != nil {
-			return nil, err
-		}
-
-		loadToppings, err := AllToppingsForPizza(pizza.ID)
-		if loadToppings != nil {
-			pizza.Toppings = loadToppings
-		}
+	if err != nil {
+		return nil, err
 	}
 
 	return pizza, nil

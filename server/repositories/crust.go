@@ -36,7 +36,7 @@ func AllCrusts() (crusts []*models.ProductVariation, err error) {
 }
 
 // OneCrust fetches a crust.
-func OneCrust(crustID string) (crust *models.ProductVariation, err error) {
+func OneCrust(crustID int) (crust *models.ProductVariation, err error) {
 	const crustQuery = `
 	SELECT pv.id, pv.name, pv.price FROM product_variation AS pv
 	WHERE product_type_id = 1
