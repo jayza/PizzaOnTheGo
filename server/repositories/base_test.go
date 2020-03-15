@@ -10,7 +10,7 @@ import (
 )
 
 func TestAllBases(t *testing.T) {
-	db := services.NewDB(models.Env{Mock: true})
+	db := services.NewDB(models.Env{Mock: true, T: t})
 	defer db.DB.Close()
 	// Here we are creating rows in our mocked database.
 	rows := sqlmock.NewRows([]string{"id", "name", "price"}).
@@ -24,7 +24,7 @@ func TestAllBases(t *testing.T) {
 	bases, err := AllBases()
 
 	if err != nil {
-		panic(err.Error())
+		t.Errorf("could not get bases: %s", err.Error())
 	}
 
 	var expectedBases []*models.Ingredient
@@ -53,11 +53,12 @@ func TestAllBases(t *testing.T) {
 }
 
 func TestOneBaseForPizza(t *testing.T) {
-	db := services.NewDB(models.Env{Mock: true})
+	db := services.NewDB(models.Env{Mock: true, T: t})
 	defer db.DB.Close()
 	// Here we are creating rows in our mocked database.
 	rows := sqlmock.NewRows([]string{"id", "name", "price"}).
-		AddRow(1, "Tomato sauce", 35)
+		AddRow(1, "Tomato sauce", 35).
+		AddRow(2, "Creme fraiche", 20)
 
 	services.Db.Mock.ExpectQuery(`^SELECT (.+) FROM ingredient*`).
 		WithArgs(1).
@@ -66,7 +67,7 @@ func TestOneBaseForPizza(t *testing.T) {
 	base, err := OneBaseForPizza(1)
 
 	if err != nil {
-		panic(err.Error())
+		t.Errorf("could not get base: %s", err.Error())
 	}
 
 	expectedBase := &models.Ingredient{

@@ -47,7 +47,7 @@ func NewDB(env models.Env) Database {
 	db, mock, err := sqlmock.New()
 
 	if err != nil {
-		log.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		env.T.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
 
 	return InitMockDB(db, mock)
