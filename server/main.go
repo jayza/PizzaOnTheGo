@@ -1,3 +1,20 @@
+// Pizza on the Go
+//
+// API for handling pizza ordering.
+//
+//     Schemes: http
+//     Host: localhost:8080
+//     Version: 0.0.1
+//     License: MIT http://opensource.org/licenses/MIT
+//     Contact: Jake Stanich<jzasnake@gmail.com>
+//
+//     Consumes:
+//     - application/json
+//
+//     Produces:
+//     - application/json
+//
+// swagger:meta
 package main
 
 import (
@@ -9,6 +26,7 @@ import (
 	"syscall"
 	"time"
 
+	_ "github.com/jayza/pizzaonthego/controllers"
 	"github.com/jayza/pizzaonthego/models"
 	"github.com/jayza/pizzaonthego/routers"
 	"github.com/jayza/pizzaonthego/services"

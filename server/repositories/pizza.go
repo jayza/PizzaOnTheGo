@@ -8,14 +8,14 @@ import (
 // OnePizza ...
 func OnePizza(pizzaID int) (pizza *models.Pizza, err error) {
 	const pizzaQuery = `
-		SELECT p.id, p.name
+		SELECT p.id, p.name, p.price
 		FROM product as p
 		WHERE p.id = ?
 	`
 
 	pizza = &models.Pizza{}
 
-	err = services.Db.Find(pizzaQuery, services.Db.Params(pizzaID), services.Db.Fields(&pizza.ID, &pizza.Name))
+	err = services.Db.Find(pizzaQuery, services.Db.Params(pizzaID), services.Db.Fields(&pizza.ID, &pizza.Name, &pizza.Price))
 
 	if err != nil {
 		return nil, err
@@ -27,7 +27,7 @@ func OnePizza(pizzaID int) (pizza *models.Pizza, err error) {
 // AllPizzas ...
 func AllPizzas() (pizzas []*models.Pizza, err error) {
 	const pizzaQuery = `
-		SELECT p.id, p.name
+		SELECT p.id, p.name, p.price
 		FROM product as p
 		WHERE product_type_id = 1
 	`
@@ -43,7 +43,7 @@ func AllPizzas() (pizzas []*models.Pizza, err error) {
 	for result.Next() {
 		var pizza *models.Pizza = &models.Pizza{}
 
-		err := result.Scan(&pizza.ID, &pizza.Name)
+		err := result.Scan(&pizza.ID, &pizza.Name, &pizza.Price)
 
 		if err != nil {
 			return nil, err

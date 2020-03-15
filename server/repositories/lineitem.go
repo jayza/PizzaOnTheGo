@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"database/sql"
+
 	"github.com/jayza/pizzaonthego/models"
 	"github.com/jayza/pizzaonthego/services"
 )
@@ -8,7 +10,7 @@ import (
 // AllLineItemsForOrder ...
 func AllLineItemsForOrder(orderID int) (lineItems []*models.LineItem, err error) {
 	const lineItemsQuery = `
-	SELECT pli.id, pli.quantity, pli.product_id, p.name, 
+	SELECT pli.id, pli.quantity, pli.unit_price, pli.product_id, p.name, p.price,
 		pli.product_size_id, ps.name, ps.price, 
 		pli.product_variation_id, pv.name, pv.price,
 		psi.description
@@ -34,8 +36,8 @@ func AllLineItemsForOrder(orderID int) (lineItems []*models.LineItem, err error)
 		var variation models.ProductVariation = models.ProductVariation{}
 		var item models.Pizza = models.Pizza{}
 
-		err := result.Scan(&lineItem.ID, &lineItem.Quantity, &item.ID,
-			&item.Name, &size.ID, &size.Name, &size.Price,
+		err := result.Scan(&lineItem.ID, &lineItem.Quantity, &lineItem.UnitPrice, &item.ID,
+			&item.Name, &item.Price, &size.ID, &size.Name, &size.Price,
 			&variation.ID, &variation.Name, &variation.Price,
 			&lineItem.SpecialInstruction)
 
@@ -48,7 +50,15 @@ func AllLineItemsForOrder(orderID int) (lineItems []*models.LineItem, err error)
 		lineItem.Item = &item
 
 		// Add Options to it.
-		lineItem.Price = size.Price + variation.Price
+		ingredients, err := AllIngredientsForLineItem(lineItem.ID)
+
+		if err != nil && err != sql.ErrNoRows {
+			return nil, err
+		}
+
+		if len(ingredients) > 0 {
+			lineItem.Ingredients = ingredients
+		}
 
 		lineItems = append(lineItems, lineItem)
 	}

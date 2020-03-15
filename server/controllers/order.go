@@ -13,6 +13,7 @@ import (
 )
 
 // GetOneOrderHandler ...
+// swagger:route GET /api/v1/orders/{id} Orders
 func GetOneOrderHandler(w http.ResponseWriter, r *http.Request) {
 	orderID, err := strconv.Atoi(mux.Vars(r)["id"])
 

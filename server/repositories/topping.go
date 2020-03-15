@@ -87,7 +87,7 @@ func AllToppingsForPizza(pizzaID int) (toppings []*models.Ingredient, err error)
 	for result.Next() {
 		var topping *models.Ingredient = &models.Ingredient{}
 
-		err := result.Scan(&topping.ID, &topping.Name, &topping.Price, &topping.Category)
+		err := result.Scan(&topping.ID, &topping.Name, &topping.Price)
 
 		if err != nil {
 			return nil, err

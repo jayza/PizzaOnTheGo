@@ -1,10 +1,11 @@
 package models
 
 // Pizza struct
+// swagger:model
 type Pizza struct {
 	ID       int               `json:"id,omitempty"`
 	Name     string            `json:"name,omitempty"`
-	Price    float32           `json:"price,omitempty"`
+	Price    float64           `json:"price,omitempty"`
 	Toppings []*Ingredient     `json:"toppings,omitempty"`
 	Crust    *ProductVariation `json:"crust,omitempty"`
 	Dough    *Ingredient       `json:"dough,omitempty"`

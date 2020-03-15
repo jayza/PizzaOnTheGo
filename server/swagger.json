@@ -1,0 +1,212 @@
+{
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "schemes": [
+    "http"
+  ],
+  "swagger": "2.0",
+  "info": {
+    "description": "API for handling pizza ordering.",
+    "title": "Pizza on the Go",
+    "contact": {
+      "name": "Jake Stanich",
+      "email": "jzasnake@gmail.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    },
+    "version": "0.0.1"
+  },
+  "host": "localhost:8080",
+  "paths": {
+    "/api/v1/orders/{id}": {
+      "get": {
+        "operationId": "orderTag"
+      }
+    }
+  },
+  "definitions": {
+    "Ingredient": {
+      "type": "object",
+      "title": "Ingredient ...",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "price": {
+          "type": "number",
+          "format": "float",
+          "x-go-name": "Price"
+        },
+        "type": {
+          "type": "string",
+          "x-go-name": "Category"
+        }
+      },
+      "x-go-package": "github.com/jayza/pizzaonthego/models"
+    },
+    "LineItem": {
+      "description": "LineItem struct",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "ingredients": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Ingredient"
+          },
+          "x-go-name": "Ingredients"
+        },
+        "item": {
+          "$ref": "#/definitions/Pizza"
+        },
+        "price": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Price"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "uint8",
+          "x-go-name": "Quantity"
+        },
+        "size": {
+          "$ref": "#/definitions/ProductSize"
+        },
+        "special_instruction": {
+          "type": "string",
+          "x-go-name": "SpecialInstruction"
+        },
+        "variation": {
+          "$ref": "#/definitions/ProductVariation"
+        }
+      },
+      "x-go-package": "github.com/jayza/pizzaonthego/models"
+    },
+    "Order": {
+      "description": "Order struct",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "lineItems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LineItem"
+          },
+          "x-go-name": "LineItems"
+        },
+        "status": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Status"
+        },
+        "userId": {
+          "type": "string",
+          "x-go-name": "UserID"
+        }
+      },
+      "x-go-package": "github.com/jayza/pizzaonthego/models"
+    },
+    "Pizza": {
+      "description": "Pizza struct",
+      "type": "object",
+      "properties": {
+        "base": {
+          "$ref": "#/definitions/Ingredient"
+        },
+        "crust": {
+          "$ref": "#/definitions/ProductVariation"
+        },
+        "dough": {
+          "$ref": "#/definitions/Ingredient"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
+        "price": {
+          "type": "number",
+          "format": "float",
+          "x-go-name": "Price"
+        },
+        "size": {
+          "$ref": "#/definitions/ProductSize"
+        },
+        "toppings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Ingredient"
+          },
+          "x-go-name": "Toppings"
+        }
+      },
+      "x-go-package": "github.com/jayza/pizzaonthego/models"
+    },
+    "ProductSize": {
+      "type": "object",
+      "title": "ProductSize ...",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "price": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Price"
+        },
+        "size": {
+          "type": "string",
+          "x-go-name": "Name"
+        }
+      },
+      "x-go-package": "github.com/jayza/pizzaonthego/models"
+    },
+    "ProductVariation": {
+      "type": "object",
+      "title": "ProductVariation ...",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "price": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "Price"
+        },
+        "size": {
+          "type": "string",
+          "x-go-name": "Name"
+        }
+      },
+      "x-go-package": "github.com/jayza/pizzaonthego/models"
+    }
+  }
+}
