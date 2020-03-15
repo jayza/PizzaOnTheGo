@@ -3,6 +3,7 @@ package routers
 import (
 	"github.com/gorilla/mux"
 	"github.com/jayza/pizzaonthego/controllers"
+	"github.com/jayza/pizzaonthego/middlewares"
 )
 
 // GetRoutes ...
@@ -12,9 +13,12 @@ func GetRoutes() *mux.Router {
 
 	api := routes.PathPrefix("/api/v1").Subrouter()
 
+	amw := middlewares.AuthMiddleware{}
+
 	// Pizzas
 	api.HandleFunc("/pizzas", controllers.GetAllPizzasHandler).Methods("GET")
 	api.HandleFunc("/pizzas/{id:[0-9]+}", controllers.GetOnePizzaHandler).Methods("GET")
+
 	pizza := api.PathPrefix("/pizzas/{id:[0-9]+}").Subrouter()
 	pizza.HandleFunc("/toppings", controllers.GetAllToppingsForPizzaHandler).Methods("GET")
 
@@ -34,8 +38,11 @@ func GetRoutes() *mux.Router {
 	api.HandleFunc("/sizes", controllers.GetAllSizesHandler).Methods("GET")
 
 	//Orders
-	api.HandleFunc("/orders", controllers.CreateOrderHandler).Methods("POST")
-	api.HandleFunc("/orders/{id:[0-9]+}", controllers.GetOneOrderHandler).Methods("GET")
+	order := api.PathPrefix("/orders").Subrouter()
+	order.Use(amw.Middleware)
+
+	order.HandleFunc("", controllers.CreateOrderHandler).Methods("POST")
+	order.HandleFunc("/{id:[0-9]+}", controllers.GetOneOrderHandler).Methods("GET")
 
 	return routes
 }

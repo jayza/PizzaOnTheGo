@@ -1,8 +1,7 @@
-package errors
+package errorshandler
 
 import (
 	"database/sql"
-	"fmt"
 )
 
 // ClientError is an error whose details to be shared with client.
@@ -55,13 +54,15 @@ func HandleErrorCode(code int, err error) error {
 	switch code {
 	case 400:
 		return NewHTTPError(err, 400, "Bad Request")
+	case 403:
+		return NewHTTPError(err, 403, "Forbidden")
 	case 404:
 		return NewHTTPError(err, 404, "Not Found")
+	case 405:
+		return NewHTTPError(err, 405, "Method Not Allowed")
 	case 500:
-		panic(err.Error())
-		// return NewHTTPError(err, 500, "Internal Server Error")
+		return NewHTTPError(err, 500, "Internal Server Error")
 	default:
-		fmt.Println("Error:", err)
 		return NewHTTPError(err, 500, "Internal Server Error")
 	}
 }
