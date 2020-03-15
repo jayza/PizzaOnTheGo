@@ -3,6 +3,7 @@ package services
 import (
 	"database/sql"
 	"log"
+	"os"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jayza/pizzaonthego/models"
@@ -35,7 +36,13 @@ func InitMockDB(db *sql.DB, mock sqlmock.Sqlmock) Database {
 // NewDB creates the Database connection pool.
 func NewDB(env models.Env) Database {
 	if env.Mock == false {
-		db, err := sql.Open("mysql", "root:password@tcp(mariadb)/pizzaonthego")
+		dbUser := os.Getenv("DB_USER")
+		dbPass := os.Getenv("DB_PASSWORD")
+		dbPort := os.Getenv("DB_PORT")
+		dbName := os.Getenv("DB_NAME")
+		dbHost := os.Getenv("DB_HOST")
+
+		db, err := sql.Open("mysql", dbUser+":"+dbPass+"@tcp"+"("+dbHost+":"+dbPort+")/"+dbName)
 
 		if err != nil {
 			log.Panic(err)

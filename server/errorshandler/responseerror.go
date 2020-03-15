@@ -39,7 +39,6 @@ func NewHTTPError(err error, code int, msg string) error {
 // HandleError takes an error parameter and determines which kind of HTTPError Response to return.
 func HandleError(err error) error {
 	log.Print(err)
-
 	if _, ok := err.(*HTTPError); ok {
 		return err
 	}

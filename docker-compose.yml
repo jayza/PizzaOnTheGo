@@ -7,6 +7,12 @@ services:
     depends_on: ["mariadb"]
     environment:
       - NODE_ENV=${NODE_ENV}
+      - DB_USER=${MYSQL_ROOT_USER}
+      - DB_PORT=${MYSQL_PORT}
+      - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - DB_NAME=${MYSQL_DATABASE}
+      - DB_HOST=${MYSQL_HOST}
+      - LOG_FILE_LOCATION=/var/log/pizzaonthego/error.log
   web:
     build: ./app
     ports:
@@ -18,7 +24,7 @@ services:
   mariadb:
     image: mariadb:10.4
     ports:
-      - "3306:3306"
+      - ${MYSQL_PORT}:${MYSQL_PORT}
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
