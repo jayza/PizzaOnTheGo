@@ -1,15 +1,24 @@
 package routers
 
 import (
+	"errors"
+	"net/http"
+
 	"github.com/gorilla/mux"
 	"github.com/jayza/pizzaonthego/controllers"
+	"github.com/jayza/pizzaonthego/errorshandler"
+	"github.com/jayza/pizzaonthego/helpers"
 	"github.com/jayza/pizzaonthego/middlewares"
+	"github.com/jayza/pizzaonthego/models"
+	"github.com/jayza/pizzaonthego/services"
 )
 
 // GetRoutes ...
 func GetRoutes() *mux.Router {
 	// Create Server and Route Handlers
 	routes := mux.NewRouter().StrictSlash(false)
+
+	routes.HandleFunc("/healthz", HealthCheckHandler).Methods("GET")
 
 	api := routes.PathPrefix("/api/v1").Subrouter()
 
@@ -45,4 +54,17 @@ func GetRoutes() *mux.Router {
 	order.HandleFunc("/{id:[0-9]+}", controllers.GetOneOrderHandler).Methods("GET")
 
 	return routes
+}
+
+// HealthCheckHandler ...
+func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+	var e error = nil
+	var health models.Health = models.Health{Health: true}
+
+	if err := services.Db.DB.Ping(); err != nil {
+		e = errorshandler.HandleErrorCode(200, errors.New("could not reach database connection"))
+		health.Health = false
+	}
+
+	helpers.RespondWithJSON(w, r, health, e)
 }
