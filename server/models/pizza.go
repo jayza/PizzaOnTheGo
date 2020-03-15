@@ -12,3 +12,9 @@ type Pizza struct {
 	Base     *Ingredient       `json:"base,omitempty"`
 	Size     *ProductSize      `json:"size,omitempty"`
 }
+
+// FindPizzaParams struct
+// swagger:parameters findPizza findPizzaToppings
+type FindPizzaParams struct {
+	ID int `json:"id,omitempty"`
+}

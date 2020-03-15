@@ -8,15 +8,24 @@ import (
 )
 
 // JSONResponse ...
+// swagger:response
 type JSONResponse struct {
-	Data   *interface{} `json:"data,omitempty"`
-	Errors *JSONError   `json:"errors,omitempty"`
+	// Contains the payload
+	//
+	// in:body
+	Data *interface{} `json:"data,omitempty"`
+	// Contains any errors you might stumble upon.
+	//
+	// in:body
+	Errors *JSONError `json:"errors,omitempty"`
 }
 
 // JSONError ...
 type JSONError struct {
+	// in:body
 	Message string `json:"message,omitempty"`
-	Code    int    `json:"code,omitempty"`
+	// in:header in:body
+	Code int `json:"code,omitempty"`
 }
 
 // RespondWithJSON ...

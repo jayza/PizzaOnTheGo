@@ -24,9 +24,232 @@
   },
   "host": "localhost:8080",
   "paths": {
-    "/api/v1/orders/{id}": {
+    "/api/v1/bases": {
       "get": {
-        "operationId": "orderTag"
+        "description": "This will return the a list of bases.",
+        "tags": [
+          "Bases"
+        ],
+        "summary": "List all pizza bases",
+        "operationId": "listBases",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/JSONResponse"
+          },
+          "default": {
+            "$ref": "#/responses/JSONResponse"
+          }
+        }
+      }
+    },
+    "/api/v1/crusts": {
+      "get": {
+        "description": "This will return the a list of crusts.",
+        "tags": [
+          "Crusts"
+        ],
+        "summary": "List all pizza crusts",
+        "operationId": "listCrusts",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/JSONResponse"
+          },
+          "default": {
+            "$ref": "#/responses/JSONResponse"
+          }
+        }
+      }
+    },
+    "/api/v1/doughs": {
+      "get": {
+        "description": "This will return the a list of doughs.",
+        "tags": [
+          "Doughs"
+        ],
+        "summary": "List all pizza doughs",
+        "operationId": "listDoughs",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/JSONResponse"
+          },
+          "default": {
+            "$ref": "#/responses/JSONResponse"
+          }
+        }
+      }
+    },
+    "/api/v1/orders": {
+      "post": {
+        "description": "This will return the entire order, complete with\nline items and shipping information after creation.",
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Creates a new order",
+        "operationId": "addOrder",
+        "parameters": [
+          {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/LineItem"
+            },
+            "x-go-name": "LineItems",
+            "name": "lineItems",
+            "in": "query"
+          },
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "UserID",
+            "name": "userId",
+            "in": "query"
+          },
+          {
+            "$ref": "#/definitions/ShippingInfo",
+            "x-go-name": "ShippingInformation",
+            "name": "shippingInformation",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "default": {
+            "$ref": "#/responses/JSONResponse"
+          }
+        }
+      }
+    },
+    "/api/v1/orders/:id": {
+      "get": {
+        "description": "This will return the entire order, complete with\nline items and shipping information.",
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Finds order by order id parameter.",
+        "operationId": "findOrder",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "ID",
+            "name": "id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/JSONResponse"
+          },
+          "default": {
+            "$ref": "#/responses/JSONResponse"
+          }
+        }
+      }
+    },
+    "/api/v1/pizzas": {
+      "get": {
+        "description": "This will return the entire order, complete with\nline items and shipping information.",
+        "tags": [
+          "Pizzas"
+        ],
+        "summary": "List all non-custom pizzas",
+        "operationId": "listPizzas",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/JSONResponse"
+          },
+          "default": {
+            "$ref": "#/responses/JSONResponse"
+          }
+        }
+      }
+    },
+    "/api/v1/pizzas/{id}": {
+      "get": {
+        "description": "This will return the complete pizza.",
+        "tags": [
+          "Pizzas"
+        ],
+        "summary": "Find pizza by ID",
+        "operationId": "findPizza",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "ID",
+            "name": "id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/JSONResponse"
+          },
+          "default": {
+            "$ref": "#/responses/JSONResponse"
+          }
+        }
+      }
+    },
+    "/api/v1/pizzas/{id}/toppings": {
+      "get": {
+        "description": "This will return all the toppings on a Pizza specified by the\ngiven id parameter.",
+        "tags": [
+          "Pizzas"
+        ],
+        "summary": "List toppings for Pizza",
+        "operationId": "findPizzaToppings",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "ID",
+            "name": "id",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/JSONResponse"
+          },
+          "default": {
+            "$ref": "#/responses/JSONResponse"
+          }
+        }
+      }
+    },
+    "/api/v1/sizes": {
+      "get": {
+        "description": "This will return the a list of sizes.",
+        "tags": [
+          "PizzaSizes"
+        ],
+        "summary": "List all pizza sizes",
+        "operationId": "listSizes",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/JSONResponse"
+          },
+          "default": {
+            "$ref": "#/responses/JSONResponse"
+          }
+        }
+      }
+    },
+    "/api/v1/toppings": {
+      "get": {
+        "description": "This will return the a list of toppings.",
+        "tags": [
+          "Toppings"
+        ],
+        "summary": "List all pizza toppings",
+        "operationId": "listToppings",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/JSONResponse"
+          },
+          "default": {
+            "$ref": "#/responses/JSONResponse"
+          }
+        }
       }
     }
   },
@@ -46,7 +269,7 @@
         },
         "price": {
           "type": "number",
-          "format": "float",
+          "format": "double",
           "x-go-name": "Price"
         },
         "type": {
@@ -55,6 +278,24 @@
         }
       },
       "x-go-package": "github.com/jayza/pizzaonthego/models"
+    },
+    "JSONError": {
+      "type": "object",
+      "title": "JSONError ...",
+      "properties": {
+        "code": {
+          "description": "in:header in:body",
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "Code"
+        },
+        "message": {
+          "description": "in:body",
+          "type": "string",
+          "x-go-name": "Message"
+        }
+      },
+      "x-go-package": "github.com/jayza/pizzaonthego/helpers"
     },
     "LineItem": {
       "description": "LineItem struct",
@@ -75,11 +316,6 @@
         "item": {
           "$ref": "#/definitions/Pizza"
         },
-        "price": {
-          "type": "number",
-          "format": "double",
-          "x-go-name": "Price"
-        },
         "quantity": {
           "type": "integer",
           "format": "uint8",
@@ -91,6 +327,11 @@
         "special_instruction": {
           "type": "string",
           "x-go-name": "SpecialInstruction"
+        },
+        "unit_price": {
+          "type": "number",
+          "format": "double",
+          "x-go-name": "UnitPrice"
         },
         "variation": {
           "$ref": "#/definitions/ProductVariation"
@@ -114,13 +355,17 @@
           },
           "x-go-name": "LineItems"
         },
+        "shippingInformation": {
+          "$ref": "#/definitions/ShippingInfo"
+        },
         "status": {
           "type": "integer",
           "format": "int64",
           "x-go-name": "Status"
         },
         "userId": {
-          "type": "string",
+          "type": "integer",
+          "format": "int64",
           "x-go-name": "UserID"
         }
       },
@@ -150,7 +395,7 @@
         },
         "price": {
           "type": "number",
-          "format": "float",
+          "format": "double",
           "x-go-name": "Price"
         },
         "size": {
@@ -207,6 +452,63 @@
         }
       },
       "x-go-package": "github.com/jayza/pizzaonthego/models"
+    },
+    "ShippingInfo": {
+      "description": "ShippingInfo struct",
+      "type": "object",
+      "properties": {
+        "city": {
+          "type": "string",
+          "x-go-name": "City"
+        },
+        "firstName": {
+          "type": "string",
+          "x-go-name": "FirstName"
+        },
+        "id": {
+          "type": "integer",
+          "format": "int64",
+          "x-go-name": "ID"
+        },
+        "lastName": {
+          "type": "string",
+          "x-go-name": "LastName"
+        },
+        "phone": {
+          "type": "string",
+          "x-go-name": "PhoneNumber"
+        },
+        "streetAddress": {
+          "type": "string",
+          "x-go-name": "StreetAddress"
+        },
+        "zipCode": {
+          "type": "string",
+          "x-go-name": "ZipCode"
+        }
+      },
+      "x-go-package": "github.com/jayza/pizzaonthego/models"
+    }
+  },
+  "responses": {
+    "HTTPError": {
+      "description": "HTTPError implements ClientError interface.",
+      "headers": {
+        "code": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "JSONResponse": {
+      "description": "JSONResponse ...",
+      "schema": {
+        "type": "object",
+        "$ref": "#/definitions/JSONError"
+      }
     }
   }
 }

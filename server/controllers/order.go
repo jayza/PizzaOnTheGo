@@ -13,7 +13,17 @@ import (
 )
 
 // GetOneOrderHandler ...
-// swagger:route GET /api/v1/orders/{id} Orders
+// swagger:route GET /api/v1/orders/:id Orders findOrder
+//
+// Finds order by order id parameter.
+//
+// This will return the entire order, complete with
+// line items and shipping information.
+//
+//
+// Responses:
+//   default: JSONResponse
+//   200: JSONResponse
 func GetOneOrderHandler(w http.ResponseWriter, r *http.Request) {
 	orderID, err := strconv.Atoi(mux.Vars(r)["id"])
 
@@ -27,6 +37,17 @@ func GetOneOrderHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // CreateOrderHandler ...
+// swagger:route POST /api/v1/orders Orders addOrder
+//
+// Creates a new order
+//
+// This will return the entire order, complete with
+// line items and shipping information after creation.
+//
+//
+//
+//     Responses:
+//       default: JSONResponse
 func CreateOrderHandler(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 

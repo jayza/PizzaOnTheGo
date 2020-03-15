@@ -50,8 +50,8 @@ func GetRoutes() *mux.Router {
 	order := api.PathPrefix("/orders").Subrouter()
 	order.Use(amw.Middleware)
 
-	order.HandleFunc("", controllers.CreateOrderHandler).Methods("POST")
 	order.HandleFunc("/{id:[0-9]+}", controllers.GetOneOrderHandler).Methods("GET")
+	order.HandleFunc("", controllers.CreateOrderHandler).Methods("POST")
 
 	return routes
 }

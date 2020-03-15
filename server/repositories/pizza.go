@@ -30,6 +30,7 @@ func AllPizzas() (pizzas []*models.Pizza, err error) {
 		SELECT p.id, p.name, p.price
 		FROM product as p
 		WHERE product_type_id = 1
+		AND custom = 0
 	`
 
 	result, err := services.Db.DB.Query(pizzaQuery)

@@ -12,6 +12,7 @@ type ClientError interface {
 }
 
 // HTTPError implements ClientError interface.
+// swagger:response
 type HTTPError struct {
 	Cause   error  `json:"-"`
 	Message string `json:"message"`
