@@ -9,15 +9,16 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/jayza/pizzaonthego/models"
 	"github.com/jayza/pizzaonthego/routers"
 	"github.com/jayza/pizzaonthego/services"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 func main() {
-	services.InitDB("root:password@tcp(mariadb)/pizzaonthego")
+	db := services.NewDB(models.Env{Mock: false})
 
-	defer services.Db.DB.Close()
+	defer db.DB.Close()
 
 	srv := &http.Server{
 		Handler:      routers.GetRoutes(),

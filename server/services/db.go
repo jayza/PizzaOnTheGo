@@ -4,32 +4,53 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/jayza/pizzaonthego/models"
+
 	// Mysql Driver for database connection pool
 	_ "github.com/go-sql-driver/mysql"
 )
 
 // Database struct
 type Database struct {
-	DB *sql.DB
+	DB   *sql.DB
+	Mock sqlmock.Sqlmock
 }
 
 // Db connection pool
 var Db Database
 
 // InitDB initializes the Database connection pool and instantiates the Database struct.
-func InitDB(dataSourceName string) {
-	var err error
+func InitDB(db *sql.DB) Database {
+	Db = Database{DB: db}
+	return Db
+}
 
-	Db.DB, err = sql.Open("mysql", dataSourceName)
+// InitMockDB initializes the Database connection pool and instantiates the Database struct.
+func InitMockDB(db *sql.DB, mock sqlmock.Sqlmock) Database {
+	Db = Database{DB: db, Mock: mock}
+	return Db
+}
 
-	if err != nil {
-		log.Panic(err)
+// NewDB creates the Database connection pool.
+func NewDB(env models.Env) Database {
+	if env.Mock == false {
+		db, err := sql.Open("mysql", "root:password@tcp(mariadb)/pizzaonthego")
+
+		if err != nil {
+			log.Panic(err)
+		}
+
+		return InitDB(db)
 	}
 
-	// Add retries
-	// if err = Db.Ping(); err != nil {
-	// 	log.Panic(err)
-	// }
+	db, mock, err := sqlmock.New()
+
+	if err != nil {
+		log.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+
+	return InitMockDB(db, mock)
 }
 
 // Fields is a helper function that spreads out the fields that map to the model.

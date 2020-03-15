@@ -8,8 +8,7 @@ import (
 // AllBases ...
 func AllBases() (bases []*models.Ingredient, err error) {
 	const baseQuery = `
-		SELECT i.id, i.name, i.price, it.name FROM ingredient AS i
-		INNER JOIN ingredient_type AS it ON it.id = i.ingredient_type_id
+		SELECT i.id, i.name, i.price FROM ingredient AS i
 		WHERE ingredient_type_id = 1
 	`
 
@@ -24,7 +23,7 @@ func AllBases() (bases []*models.Ingredient, err error) {
 	for result.Next() {
 		var base *models.Ingredient = &models.Ingredient{}
 
-		err := result.Scan(&base.ID, &base.Name, &base.Price, &base.Category)
+		err := result.Scan(&base.ID, &base.Name, &base.Price)
 
 		if err != nil {
 			return nil, err
