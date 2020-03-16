@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"database/sql"
-	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/jayza/pizzaonthego/models"
@@ -173,7 +173,6 @@ func CreateOrder(o models.Order) (order *models.Order, err error) {
 			extraIngredientsQuery := "INSERT INTO product_extra_ingredients (product_line_item_id, ingredient_id) VALUES (?,?)" + strings.Repeat(" ,(?,?)", len(lineItem.Ingredients)-1)
 			extraIngredientsStmt, err := tx.Prepare(extraIngredientsQuery)
 
-			fmt.Println(extraIngredientsQuery)
 			if err != nil {
 				return nil, err
 			}
@@ -183,8 +182,6 @@ func CreateOrder(o models.Order) (order *models.Order, err error) {
 			for _, ingredient := range lineItem.Ingredients {
 				args = append(args, lastInsertLineItemID, ingredient.ID)
 			}
-
-			fmt.Println(args)
 
 			defer extraIngredientsStmt.Close()
 
@@ -220,6 +217,16 @@ func CreateOrder(o models.Order) (order *models.Order, err error) {
 	var intLastInsertID int = int(lastInsertOrderID)
 
 	order, err = OneOrder(intLastInsertID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = services.GeneratePdfReceiptAndOutput(order, "Receipt-Ordernumber-"+strconv.Itoa(order.ID)+".pdf")
+
+	if err != nil {
+		return nil, err
+	}
 
 	return order, nil
 }

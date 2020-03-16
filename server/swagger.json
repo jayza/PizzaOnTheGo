@@ -119,11 +119,14 @@
     },
     "/api/v1/orders/:id": {
       "get": {
-        "description": "This will return the entire order, complete with\nline items and shipping information.",
+        "description": "This will return the entire order, complete with\nline items and shipping information in the form of a PDF.",
+        "produces": [
+          "application/pdf"
+        ],
         "tags": [
           "Orders"
         ],
-        "summary": "Finds order by order id parameter.",
+        "summary": "Downloads the order receipt PDF",
         "operationId": "findOrder",
         "parameters": [
           {
@@ -135,9 +138,33 @@
           }
         ],
         "responses": {
-          "200": {
+          "default": {
             "$ref": "#/responses/JSONResponse"
-          },
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{id}/receipt": {
+      "get": {
+        "description": "This will return the entire order, complete with\nline items and shipping information in the form of a PDF.",
+        "produces": [
+          "application/pdf"
+        ],
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Downloads the order receipt PDF",
+        "operationId": "findOrder",
+        "parameters": [
+          {
+            "type": "integer",
+            "format": "int64",
+            "x-go-name": "ID",
+            "name": "id",
+            "in": "query"
+          }
+        ],
+        "responses": {
           "default": {
             "$ref": "#/responses/JSONResponse"
           }
@@ -318,7 +345,7 @@
         },
         "quantity": {
           "type": "integer",
-          "format": "uint8",
+          "format": "int64",
           "x-go-name": "Quantity"
         },
         "size": {

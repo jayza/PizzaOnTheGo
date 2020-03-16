@@ -12,7 +12,8 @@ services:
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - DB_NAME=${MYSQL_DATABASE}
       - DB_HOST=${MYSQL_HOST}
-      - LOG_FILE_LOCATION=/var/log/pizzaonthego/error.log
+      - LOG_FILE_LOCATION=${LOG_FILE_LOCATION}
+      - RECEIPT_FILE_DIRECTORY=${RECEIPT_FILE_DIRECTORY}
   web:
     build: ./app
     ports:

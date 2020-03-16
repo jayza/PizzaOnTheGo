@@ -3,6 +3,7 @@ package routers
 import (
 	"errors"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/jayza/pizzaonthego/controllers"
@@ -19,6 +20,8 @@ func GetRoutes() *mux.Router {
 	routes := mux.NewRouter().StrictSlash(false)
 
 	routes.HandleFunc("/healthz", HealthCheckHandler).Methods("GET")
+
+	routes.PathPrefix("/public/receipts/").Handler(http.StripPrefix("/public/receipts/", http.FileServer(http.Dir(os.Getenv("RECEIPT_FILE_DIRECTORY")))))
 
 	api := routes.PathPrefix("/api/v1").Subrouter()
 
@@ -52,6 +55,7 @@ func GetRoutes() *mux.Router {
 
 	order.HandleFunc("/{id:[0-9]+}", controllers.GetOneOrderHandler).Methods("GET")
 	order.HandleFunc("", controllers.CreateOrderHandler).Methods("POST")
+	order.HandleFunc("/{id:[0-9]+}/receipt", controllers.DownloadOrderReceipt).Methods("GET")
 
 	return routes
 }
