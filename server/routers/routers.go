@@ -25,7 +25,12 @@ func GetRoutes() *mux.Router {
 
 	api := routes.PathPrefix("/api/v1").Subrouter()
 
+	aomw := middlewares.AllowOriginMiddleware{}
 	amw := middlewares.AuthMiddleware{}
+
+	// api.Methods(http.MethodGet, http.MethodPut, http.MethodPatch, http.MethodOptions)
+	api.Use(mux.CORSMethodMiddleware(api))
+	api.Use(aomw.AllowOriginMiddleware)
 
 	// Pizzas
 	api.HandleFunc("/pizzas", controllers.GetAllPizzasHandler).Methods("GET")
