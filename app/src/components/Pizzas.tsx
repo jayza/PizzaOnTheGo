@@ -1,9 +1,9 @@
 import React from 'react'
 import { PizzaContext } from '../contexts/PizzaContext';
-import { Pizza, Variation, Size } from '../interfaces';
+import { Pizza, Variation, Size, Ingredient, StateProps } from '../interfaces';
+import { AddToCart } from './AddToCart';
 
-const Pizzas = () => {
-  
+const Pizzas = (setGlobalState: any) => {
   const getPizzaPrice = (p: Pizza, size?: Size, crust?: Variation) => {
     let price = p.price;
 
@@ -23,17 +23,6 @@ const Pizzas = () => {
     return ingredients.map(ingredient => ingredient.name).join(", ");
   }
 
-  const selectSize = (sizes: Size[], defaultSize?: Size) => {
-    return sizes.map(size => (
-      <div>
-        <label>
-          {size.size}
-          <input type="radio" value={size.id} checked={defaultSize !== undefined && size.id == defaultSize.id}/>
-        </label>
-      </div>
-    ))
-  }
-
   return (
     <PizzaContext.Consumer>
     {(value) => value && (
@@ -48,12 +37,7 @@ const Pizzas = () => {
           <span>{ getPizzaPrice(pizza, value.defaultSize, value.defaultCrust) } SEK</span>
         </div>
         <div>
-          <form>
-            <div className="form__item">
-              Size:<br/>
-              {selectSize(value.sizes, value.defaultSize)}
-            </div>
-          </form>
+          <AddToCart pizza={pizza} setGlobalState={setGlobalState}/>
         </div>
       </div>
       ))}

@@ -10,5 +10,5 @@ type LineItem struct {
 	Variation          *ProductVariation `json:"variation,omitempty"`
 	Ingredients        []*Ingredient     `json:"ingredients,omitempty"`
 	Quantity           int               `json:"quantity"`
-	SpecialInstruction string            `json:"special_instruction,omitempty"`
+	SpecialInstruction string            `json:"specialInstruction,omitempty"`
 }

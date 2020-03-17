@@ -14,6 +14,8 @@ const App = () => {
     pizzas: [],
     sizes: [],
     crusts: [],
+    toppings: [],
+    lineItems: []
   }
 
   const [globalState, setGlobalState] = useState(initialState);
@@ -43,11 +45,18 @@ const App = () => {
       .then(({data}) => data)
       .catch(console.error)
 
+    console.log("fetch crusts")
+    const toppings = await fetch(apiUrl + '/toppings')
+    .then(res => res.json())
+      .then(({data}) => data)
+      .catch(console.error)
+
     setGlobalState({
       ...globalState, 
       pizzas, 
       sizes, 
       crusts,
+      toppings,
       defaultSize: sizes[0],
       defaultCrust: crusts[0]
     });
@@ -62,7 +71,8 @@ const App = () => {
       {!loading &&(
       <>
         <h1>Pizzas</h1>
-        <Pizzas/>
+        {globalState.lineItems.length} items in the cart.
+        <Pizzas setGlobalState={setGlobalState}/>
       </>
       )}
     </PizzaContext.Provider>

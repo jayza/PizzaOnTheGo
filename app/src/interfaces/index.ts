@@ -10,7 +10,7 @@ export interface Pizza {
 export interface Size {
   id: number;
   price: number;
-  size: string;
+  name: string;
 }
 
 export interface Variation {
@@ -25,10 +25,23 @@ export interface Ingredient {
   name: string;
 }
 
+export interface LineItem {
+  id?: number;
+  price?: number;
+  item: Pizza;
+  quantity: number;
+  size?: Size;
+  variation?: Variation;
+  specialInstruction: string;
+  ingredients: Ingredient[];
+}
+
 export interface StateProps {
   pizzas: Pizza[];
   sizes: Size[];
   crusts: Variation[];
+  toppings: Ingredient[];
+  lineItems: LineItem[];
   defaultSize?: Size;
   defaultCrust?: Variation;
 }
