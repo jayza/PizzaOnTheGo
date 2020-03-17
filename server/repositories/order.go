@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jayza/pizzaonthego/helpers"
 	"github.com/jayza/pizzaonthego/models"
 	"github.com/jayza/pizzaonthego/services"
 )
@@ -222,7 +223,7 @@ func CreateOrder(o models.Order) (order *models.Order, err error) {
 		return nil, err
 	}
 
-	err = services.GeneratePdfReceiptAndOutput(order, "Receipt-Ordernumber-"+strconv.Itoa(order.ID)+".pdf")
+	err = helpers.GeneratePdfReceiptAndOutput(order, "Receipt-Ordernumber-"+strconv.Itoa(order.ID)+".pdf")
 
 	if err != nil {
 		return nil, err

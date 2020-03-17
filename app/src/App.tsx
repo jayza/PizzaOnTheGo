@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { PizzaContext } from "./contexts/PizzaContext"
-import { StateProps } from './interfaces';
+import { StateProps, Size } from './interfaces';
 import Pizzas from './components/Pizzas';
 
 const apiUrl = 'http://localhost:8080/api/v1';

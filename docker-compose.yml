@@ -3,7 +3,7 @@ services:
   server:
     build: ./server
     ports:
-      - "8080:8080"
+      - ${SERVER_PORT}:${SERVER_PORT}
     depends_on: ["mariadb"]
     environment:
       - NODE_ENV=${NODE_ENV}
@@ -14,6 +14,8 @@ services:
       - DB_HOST=${MYSQL_HOST}
       - LOG_FILE_LOCATION=${LOG_FILE_LOCATION}
       - RECEIPT_FILE_DIRECTORY=${RECEIPT_FILE_DIRECTORY}
+      - ACCESS_CONTROL_ALLOW_ORIGIN=${ACCESS_CONTROL_ALLOW_ORIGIN}
+      - SERVER_PORT=${SERVER_PORT}
   web:
     build: ./app
     ports:

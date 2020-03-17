@@ -40,7 +40,7 @@ func main() {
 
 	srv := &http.Server{
 		Handler:      routers.GetRoutes(),
-		Addr:         ":8080",
+		Addr:         ":" + os.Getenv("SERVER_PORT"),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}

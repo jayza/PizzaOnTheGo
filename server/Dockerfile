@@ -1,6 +1,7 @@
 FROM golang:1.13-alpine
 
 ENV RECEIPT_FILE_DIRECTORY=/order-receipts/
+ENV SERVER_PORT=8080
 
 WORKDIR /backend
 
@@ -14,6 +15,6 @@ RUN go build -o main .
 
 RUN mkdir -p $RECEIPT_FILE_DIRECTORY
 
-EXPOSE 8080
+EXPOSE $SERVER_PORT
 
 CMD ["./main"]
