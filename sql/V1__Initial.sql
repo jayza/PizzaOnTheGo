@@ -199,21 +199,23 @@ INSERT INTO `ingredient_category` (id, name)
   VALUES
     (1, "Meat"),
     (2, "Vegetable"),
-    (3, "Cheese");
+    (3, "Cheese"),
+    (4, "Sauce"),
+    (5, "Dough");
 
 INSERT INTO `ingredient` (ingredient_type_id, name, price, ingredient_category_id)
   VALUES
-    (1, "Creme Fraiche", 10, NULL),
-    (1, "Tomato sauce", 10, NULL),
+    (1, "Creme Fraiche", 10, 4),
+    (1, "Tomato sauce", 10, 4),
     (2, "Mozarella", 10, 3),
     (2, "Mushrooms", 10, 2),
     (2, "Spinach", 10, 2),
     (2, "Sucuk", 10, 1),
     (2, "Kebab", 10, 1),
     (2, "Red Onion", 10, 2),
-    (3, "Gluten Free", 15, NULL),
-    (3, "Sourdough", 20, NULL),
-    (3, "Classic", 10, NULL);
+    (3, "Gluten Free", 15, 5),
+    (3, "Sourdough", 20, 5),
+    (3, "Classic", 10, 5);
 
 INSERT INTO `product` (product_type_id, name, price, custom)
   VALUES
@@ -229,5 +231,11 @@ INSERT INTO `product_ingredients` (product_id, ingredient_id)
     (2, 2),
     (2, 3),
     (2, 11),
-    (2, 6);
+    (2, 6),
+    (3, 2),
+    (3, 3),
+    (3, 4),
+    (3, 7),
+    (3, 8),
+    (3, 11);
     

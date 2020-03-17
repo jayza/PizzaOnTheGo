@@ -45,7 +45,13 @@ func GetOnePizzaHandler(w http.ResponseWriter, r *http.Request) {
 //   default: JSONResponse
 //   200: JSONResponse
 func GetAllPizzasHandler(w http.ResponseWriter, r *http.Request) {
-	pizzas, err := repository.AllPizzas()
+	withIngredientsQuery := r.URL.Query().Get("withIngredients")
+	withIngredients := false
+	if withIngredientsQuery == "1" {
+		withIngredients = true
+	}
+
+	pizzas, err := repository.AllPizzas(withIngredients)
 	helpers.RespondWithJSON(w, r, pizzas, err)
 }
 

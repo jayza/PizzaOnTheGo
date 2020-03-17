@@ -25,7 +25,7 @@ func OnePizza(pizzaID int) (pizza *models.Pizza, err error) {
 }
 
 // AllPizzas ...
-func AllPizzas() (pizzas []*models.Pizza, err error) {
+func AllPizzas(withIngredients bool) (pizzas []*models.Pizza, err error) {
 	const pizzaQuery = `
 		SELECT p.id, p.name, p.price
 		FROM product as p
@@ -48,6 +48,18 @@ func AllPizzas() (pizzas []*models.Pizza, err error) {
 
 		if err != nil {
 			return nil, err
+		}
+
+		if withIngredients == true {
+			toppings, base, dough, err := AllIngredientsForPizza(pizza.ID)
+
+			if err != nil {
+				return nil, err
+			}
+
+			pizza.Toppings = toppings
+			pizza.Base = base
+			pizza.Dough = dough
 		}
 
 		pizzas = append(pizzas, pizza)
