@@ -35,6 +35,26 @@ export interface LineItem {
   specialInstruction: string;
   ingredients: Ingredient[];
 }
+export interface ShippingInformation {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  streetAddress: string;
+  zipCode: string;
+  city: string;
+}
+
+export interface Order {
+  id?: number;
+  shippingInformation: ShippingInformation;
+  userId: number;
+  lineItems: LineItem[];
+}
+
+export interface GlobalState {
+  globalState: StateProps;
+  setLineItems: React.Dispatch<React.SetStateAction<StateProps>>;
+}
 
 export interface StateProps {
   pizzas: Pizza[];

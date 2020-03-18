@@ -1,14 +1,13 @@
 import React, { useContext, useState } from 'react'
-import { Size, Variation, Ingredient, LineItem, Pizza } from '../interfaces'
+import { Size, Variation, Ingredient, LineItem } from '../interfaces'
 import { PizzaContext } from '../contexts/PizzaContext'
 
-export const AddToCart = (pizza: any) => {
-  const globalStateValue = useContext(PizzaContext);
-
+export const AddToCart = (value: any) => {
+  const {globalState, setLineItems } = useContext(PizzaContext);
   const initialLineItem: LineItem = { 
-    item: pizza, 
-    size: globalStateValue?.defaultSize, 
-    variation: globalStateValue?.defaultCrust,
+    item: value.pizza, 
+    size: globalState?.defaultSize,
+    variation: globalState?.defaultCrust,
     specialInstruction: "",
     quantity: 1,
     ingredients: []
@@ -21,16 +20,20 @@ export const AddToCart = (pizza: any) => {
     let value = null;
     switch (e.target.name) {
       case "size":
-      value = globalStateValue?.sizes.find(s => s.id == inputValue)
+      value = globalState?.sizes.find(s => s.id === Number(inputValue))
       break;
       case "variation":
-      value = globalStateValue?.crusts.find(c => c.id == inputValue)
+      value = globalState?.crusts.find(c => c.id === Number(inputValue))
       break;
       case "ingredients":
-      value = [...lineItemState.ingredients, globalStateValue?.toppings.find(t => t.id == inputValue)]
+      value = [...lineItemState.ingredients, globalState?.toppings.find(t => t.id === Number(inputValue))]
       break;
       case "specialInstruction":
       value = inputValue
+      break;
+      case "quantity":
+      value = parseInt(inputValue)
+      break;
     }
 
     return setLineItemState({
@@ -41,7 +44,8 @@ export const AddToCart = (pizza: any) => {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    // setGlobalState({...globalStateValue, lineItems: [lineItemState]});
+    setLineItems(lineItemState)
+    setLineItemState({...initialLineItem});
   }
 
   const selectSize = (sizes: Size[], defaultSize?: Size) => {
@@ -55,14 +59,14 @@ export const AddToCart = (pizza: any) => {
             value={size.id} 
             onChange={handleChange}
             name="size" 
-            defaultChecked={globalStateValue?.defaultSize !== undefined && globalStateValue?.defaultSize.id === size.id }
+            checked={(lineItemState.size !== undefined) ? lineItemState.size.id === size.id : false}
             />
           {size.price} SEK
         </label>
       </div>
     ))
   }
-
+     
   const selectCrust = (crusts: Variation[], defaultCrust?: Variation) => {
     return crusts.map(crust => (
       <div>
@@ -74,7 +78,7 @@ export const AddToCart = (pizza: any) => {
             value={crust.id} 
             onChange={handleChange}
             name="variation"
-            defaultChecked={globalStateValue?.defaultCrust !== undefined && globalStateValue?.defaultCrust.id === crust.id } 
+            checked={(lineItemState.variation !== undefined) ? lineItemState.variation.id === crust.id : false} 
           />
           {crust.price} SEK
         </label>
@@ -91,6 +95,7 @@ export const AddToCart = (pizza: any) => {
             type="checkbox" 
             value={ingredient.id} 
             onChange={handleChange} 
+            checked={(lineItemState.ingredients.findIndex((i) => i.id === ingredient.id)) !== -1}
             name="ingredients"
           />
           +{ingredient.price} SEK
@@ -101,19 +106,23 @@ export const AddToCart = (pizza: any) => {
 
   return (
     <PizzaContext.Consumer>
-    {(value) => value && (
+    {(value) => value.globalState !== null && value && (
     <form onSubmit={handleSubmit}>
       <div className="form__item">
         <b>Size:</b><br/>
-        {selectSize(value.sizes, value.defaultSize)}
+        {selectSize(value.globalState.sizes, value.globalState.defaultSize)}
       </div>
       <div className="form__item">
         <b>Crust:</b><br/>
-        {selectCrust(value.crusts, value.defaultCrust)}
+        {selectCrust(value.globalState.crusts, value.globalState.defaultCrust)}
       </div>
       <div className="form__item">
         <b>Ingredients:</b><br/>
-        {selectIngredients(value.toppings)}
+        {selectIngredients(value.globalState.toppings)}
+      </div>
+      <div className="form__item">
+        <b>Quantity:</b><br/>
+        <input type="number" name="quantity" defaultValue="1" onChange={handleChange}/>
       </div>
       <div className="form__item">
         <b>Special instructions:</b><br/>

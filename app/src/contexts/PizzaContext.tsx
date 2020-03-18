@@ -1,4 +1,13 @@
 import React from 'react';
-import { StateProps } from '../interfaces'
+import { LineItem, StateProps } from '../interfaces'
 // create context provider and consumer
-export const PizzaContext = React.createContext<StateProps|null>(null);
+export const PizzaContext = React.createContext<{globalState: StateProps, setLineItems: Function}>({
+  globalState: {
+    pizzas: [],
+    sizes: [],
+    crusts: [],
+    toppings: [],
+    lineItems: []
+  },
+  setLineItems: (lineItem: LineItem) => {}
+});

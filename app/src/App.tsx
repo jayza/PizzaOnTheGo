@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { PizzaContext } from "./contexts/PizzaContext"
-import { StateProps, Size } from './interfaces';
+import { StateProps, LineItem } from './interfaces';
 import Pizzas from './components/Pizzas';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from "react-router-dom";
+import Cart from './components/Cart';
+import Checkout from './components/Checkout';
 
 const apiUrl = 'http://localhost:8080/api/v1';
-
-
-
 const App = () => {
   const initialState: StateProps = {
     pizzas: [],
@@ -23,6 +26,7 @@ const App = () => {
 
   useEffect(() => {
     getInitialData()
+    // eslint-disable-next-line
   },[])
 
   const getInitialData = async () => {
@@ -67,13 +71,28 @@ const App = () => {
   }
 
   return (
-    <PizzaContext.Provider value={globalState}>
+    <PizzaContext.Provider value={{
+      globalState: globalState, 
+      setLineItems: (lineItem: LineItem) => {
+        setGlobalState({...globalState, lineItems: [...globalState.lineItems, lineItem]})
+        console.log(globalState);
+      }
+    }}>
       {!loading &&(
-      <>
-        <h1>Pizzas</h1>
-        {globalState.lineItems.length} items in the cart.
-        <Pizzas setGlobalState={setGlobalState}/>
-      </>
+      <Router>
+        <Switch>
+          <Route path="/checkout">
+            <Checkout/>
+          </Route>
+          <Route path="/">
+            <>
+              <h1>Pizzas</h1>
+              <Cart/>
+              <Pizzas/>
+            </>
+          </Route>
+        </Switch>
+      </Router>
       )}
     </PizzaContext.Provider>
   );
