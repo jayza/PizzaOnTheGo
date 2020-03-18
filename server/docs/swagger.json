@@ -111,6 +111,9 @@
           }
         ],
         "responses": {
+          "200": {
+            "$ref": "#/responses/OrderResponse"
+          },
           "default": {
             "$ref": "#/responses/JSONResponse"
           }
@@ -119,14 +122,11 @@
     },
     "/api/v1/orders/:id": {
       "get": {
-        "description": "This will return the entire order, complete with\nline items and shipping information in the form of a PDF.",
-        "produces": [
-          "application/pdf"
-        ],
+        "description": "This will return the entire order, complete with\nline items and shipping information.",
         "tags": [
           "Orders"
         ],
-        "summary": "Downloads the order receipt PDF",
+        "summary": "Finds order by order id parameter.",
         "operationId": "findOrder",
         "parameters": [
           {
@@ -138,6 +138,9 @@
           }
         ],
         "responses": {
+          "200": {
+            "$ref": "#/responses/OrderResponse"
+          },
           "default": {
             "$ref": "#/responses/JSONResponse"
           }
@@ -154,16 +157,7 @@
           "Orders"
         ],
         "summary": "Downloads the order receipt PDF",
-        "operationId": "findOrder",
-        "parameters": [
-          {
-            "type": "integer",
-            "format": "int64",
-            "x-go-name": "ID",
-            "name": "id",
-            "in": "query"
-          }
-        ],
+        "operationId": "findOrderReceipt",
         "responses": {
           "default": {
             "$ref": "#/responses/JSONResponse"
@@ -304,7 +298,7 @@
           "x-go-name": "Category"
         }
       },
-      "x-go-package": "github.com/jayza/pizzaonthego/models"
+      "x-go-package": "_/home/jake/Development/pizza/server/models"
     },
     "JSONError": {
       "type": "object",
@@ -322,7 +316,7 @@
           "x-go-name": "Message"
         }
       },
-      "x-go-package": "github.com/jayza/pizzaonthego/helpers"
+      "x-go-package": "_/home/jake/Development/pizza/server/helpers"
     },
     "LineItem": {
       "description": "LineItem struct",
@@ -351,7 +345,7 @@
         "size": {
           "$ref": "#/definitions/ProductSize"
         },
-        "special_instruction": {
+        "specialInstruction": {
           "type": "string",
           "x-go-name": "SpecialInstruction"
         },
@@ -364,39 +358,7 @@
           "$ref": "#/definitions/ProductVariation"
         }
       },
-      "x-go-package": "github.com/jayza/pizzaonthego/models"
-    },
-    "Order": {
-      "description": "Order struct",
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int64",
-          "x-go-name": "ID"
-        },
-        "lineItems": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/LineItem"
-          },
-          "x-go-name": "LineItems"
-        },
-        "shippingInformation": {
-          "$ref": "#/definitions/ShippingInfo"
-        },
-        "status": {
-          "type": "integer",
-          "format": "int64",
-          "x-go-name": "Status"
-        },
-        "userId": {
-          "type": "integer",
-          "format": "int64",
-          "x-go-name": "UserID"
-        }
-      },
-      "x-go-package": "github.com/jayza/pizzaonthego/models"
+      "x-go-package": "_/home/jake/Development/pizza/server/models"
     },
     "Pizza": {
       "description": "Pizza struct",
@@ -436,7 +398,7 @@
           "x-go-name": "Toppings"
         }
       },
-      "x-go-package": "github.com/jayza/pizzaonthego/models"
+      "x-go-package": "_/home/jake/Development/pizza/server/models"
     },
     "ProductSize": {
       "type": "object",
@@ -447,17 +409,17 @@
           "format": "int64",
           "x-go-name": "ID"
         },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
         "price": {
           "type": "number",
           "format": "double",
           "x-go-name": "Price"
-        },
-        "size": {
-          "type": "string",
-          "x-go-name": "Name"
         }
       },
-      "x-go-package": "github.com/jayza/pizzaonthego/models"
+      "x-go-package": "_/home/jake/Development/pizza/server/models"
     },
     "ProductVariation": {
       "type": "object",
@@ -468,17 +430,17 @@
           "format": "int64",
           "x-go-name": "ID"
         },
+        "name": {
+          "type": "string",
+          "x-go-name": "Name"
+        },
         "price": {
           "type": "number",
           "format": "double",
           "x-go-name": "Price"
-        },
-        "size": {
-          "type": "string",
-          "x-go-name": "Name"
         }
       },
-      "x-go-package": "github.com/jayza/pizzaonthego/models"
+      "x-go-package": "_/home/jake/Development/pizza/server/models"
     },
     "ShippingInfo": {
       "description": "ShippingInfo struct",
@@ -514,7 +476,7 @@
           "x-go-name": "ZipCode"
         }
       },
-      "x-go-package": "github.com/jayza/pizzaonthego/models"
+      "x-go-package": "_/home/jake/Development/pizza/server/models"
     }
   },
   "responses": {
@@ -535,6 +497,33 @@
       "schema": {
         "type": "object",
         "$ref": "#/definitions/JSONError"
+      }
+    },
+    "OrderResponse": {
+      "description": "OrderResponse ...",
+      "schema": {
+        "$ref": "#/definitions/ShippingInfo"
+      },
+      "headers": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "lineItems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LineItem"
+          }
+        },
+        "shippingInformation": {},
+        "status": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userId": {
+          "type": "integer",
+          "format": "int64"
+        }
       }
     }
   }

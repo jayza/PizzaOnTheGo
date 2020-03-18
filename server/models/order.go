@@ -23,3 +23,13 @@ type OrderCreateParams struct {
 type OrderFindParams struct {
 	ID int `json:"id,omitempty"`
 }
+
+// OrderResponse ...
+// swagger:response
+type OrderResponse struct {
+	ID                  int           `json:"id,omitempty"`
+	LineItems           []*LineItem   `json:"lineItems,omitempty"`
+	Status              *int          `json:"status,omitempty"`
+	UserID              int           `json:"userId,omitempty"`
+	ShippingInformation *ShippingInfo `json:"shippingInformation,omitempty"`
+}

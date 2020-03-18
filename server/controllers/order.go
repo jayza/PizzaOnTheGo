@@ -27,7 +27,7 @@ import (
 //
 // Responses:
 //   default: JSONResponse
-//   200: JSONResponse
+//   200: OrderResponse
 func GetOneOrderHandler(w http.ResponseWriter, r *http.Request) {
 	orderID, err := strconv.Atoi(mux.Vars(r)["id"])
 
@@ -50,8 +50,9 @@ func GetOneOrderHandler(w http.ResponseWriter, r *http.Request) {
 //
 //
 //
-//     Responses:
-//       default: JSONResponse
+// Responses:
+//   default: JSONResponse
+//	 200: OrderResponse
 func CreateOrderHandler(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 
@@ -69,7 +70,7 @@ func CreateOrderHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // DownloadOrderReceipt ...
-// swagger:route GET /api/v1/orders/{id}/receipt Orders findOrder
+// swagger:route GET /api/v1/orders/{id}/receipt Orders findOrderReceipt
 //
 // Downloads the order receipt PDF
 //
