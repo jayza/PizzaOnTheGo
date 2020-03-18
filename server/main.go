@@ -26,6 +26,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gorilla/handlers"
 	_ "github.com/jayza/pizzaonthego/controllers"
 	"github.com/jayza/pizzaonthego/models"
 	"github.com/jayza/pizzaonthego/routers"
@@ -38,8 +39,10 @@ func main() {
 
 	defer db.DB.Close()
 
+	headersOk := handlers.AllowedHeaders([]string{"Content-Type"})
+
 	srv := &http.Server{
-		Handler:      routers.GetRoutes(),
+		Handler:      handlers.CORS(headersOk)(routers.GetRoutes()),
 		Addr:         ":" + os.Getenv("SERVER_PORT"),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
