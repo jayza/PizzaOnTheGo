@@ -122,11 +122,11 @@ export const AddToCart = (value: any) => {
       </div>
       <div className="form__item">
         <b>Quantity:</b><br/>
-        <input type="number" name="quantity" defaultValue="1" onChange={handleChange}/>
+        <input type="number" name="quantity" min="1" value={lineItemState.quantity} onChange={handleChange}/>
       </div>
       <div className="form__item">
         <b>Special instructions:</b><br/>
-        <textarea name="specialInstruction" onChange={handleChange}></textarea>
+        <textarea name="specialInstruction" value={lineItemState.specialInstruction} onChange={handleChange}></textarea>
       </div>
       <input value="Add to Cart" type="submit" />
     </form>

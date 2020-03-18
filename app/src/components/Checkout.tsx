@@ -160,7 +160,8 @@ const Checkout = () => {
             <div>
               <h1>Your order is completed!</h1>
               <p>Thank you for ordering with Pizza on the Go! Grab your receipt below.</p>
-              <a href={receiptUrl(completeOrder)}>Download receipt</a>
+              <a href={receiptUrl(completeOrder)}>Download receipt</a> or 
+              <Link to="/">Go back to the pizza shop</Link>
             </div>
           ))}
         </>
